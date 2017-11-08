@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+
+<! jward 2016 >
+
+<html lang="en"> 
+<head>
+	<title>SHIELD</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
+	<link href="css/style.css" rel="stylesheet">
+	<script src="js/libs/jquery-1.11.2.min.js"></script>
+	<script src="js/libs/jquery.mousewheel.min.js"></script>
+	<script src="js/libs/clipper.js"></script>
+	<script src="js/draw.js"></script>
+	<script src="js/parts.js"></script>
+	<script src="js/make.js"></script>
+</head>
+
+<body onload="makeFrame(radius); parts();">
+
+<select id="type" autocomplete="on">
+  <option value="part" selected disabled>&#43; parts</option>
+  <option value="hole">hole (0.1"&#8960;)</option>
+  <option value="dip">pad (DIP)</option>
+  <option value="smd" data-part="0.03">pad (SMD 0.03")</option>
+  <option value="smd" data-part="0.06">pad (SMD 0.06")</option>
+  <option value="routeD">trace (0.005")</option>
+  <option value="routeC">trace (0.010")</option>
+  <option value="routeB">trace (0.012")</option>
+  <option value="route">trace (0.024")</option>
+  <option value="resistor">SMD (1206)</option>
+</select>
+
+<select id="board" autocomplete="on">
+  <option value="arduino" selected>Arduino</option>
+  <option value="blank">blank</option>
+</select>
+
+<select id="side" autocomplete="on">
+  <option value="top" selected>side: top</option>
+  <option value="back">side: back</option>
+</select>
+
+<select id="grid" autocomplete="on">
+  <option value="0.025">grid: 0.025"</option>
+  <option value="0.05">grid: 0.05"</option>
+  <option value="0.1" selected>grid: 0.1"</option>
+</select>
+
+<select id="project" autocomplete="on">
+  <option value="default" selected>default</option>
+  <option value="led">led</option>
+</select>
+
+
+<div id="finishPass">1/64 pass</div>
+<input type="checkbox" id="finish" value="finish">
+
+<t id="origin">
+origin offset
+</t>
+
+
+<t id="originx">
+x:
+</t>
+
+<t id="originy">
+y:
+</t>
+
+<input id="x-origin" type="number" value="0.1" autocomplete="on" step="0.1"/>
+<input id="y-origin" type="number" value="0.1" autocomplete="on" step="0.1"/>
+
+<input id="help" type="submit" value="setup" onclick="help()"/>
+<input id="input_tool" type="number" value="0.79" autocomplete="on" step="0.01"/>
+<input id="input_depth" type="number" value="1.7" autocomplete="on" step="0.1" min="0"/>
+
+<input id="undo" type="submit" value="UNDO" onclick="undo()"/>
+<input id="select" type="submit" value="delete" onclick="ripup()"/>
+
+<select id="file" autocomplete="off">
+  <option value="gcode">G-code inch (.tap)</option>
+  <option value="rml" selected>Modela (.rml)</option>
+  <option value="sbp">ShopBot (.sbp)</option>
+</select>
+
+<button id="input_submit" onclick="make()">MAKE</button>
+
+<select id="part-list" autocomplete="off">
+  <option value="part" selected disabled>part#</option>
+</select>
+
+<!--
+<input id="input_save" type="submit" value="SAVE" onclick="save()"/>
+-->
+
+<canvas id="myCanvas"></canvas>
+
+<a href="#" id="downloadLink"></a>
+
+<div id="help-div">
+<center><b>board</b></center>
+<p class="alignleft">
+	units:
+	<br>width:
+	<br>height:
+	<br>origin:
+	<br>grid spacing:
+	<br>tool diameter:
+	<br>finish pass tool:
+<p class="alignright">
+	inch
+	<br><bw id="board_width"> </bw>
+	<br><bh id="board_height"> </bh>
+	<br>lower-left
+	<br><gs id="gridSpacing">0.1"</gs>
+	<br id="tool">1/32"
+	<br>1/64"
+</p>
+<br>
+<center><b>keyboard shortcuts</b></center>
+<p class="alignleft">
+	clear all
+	<br>help
+	<br>pan
+	<br>undo
+	<br>zoom extents
+	<br>zoom in/out
+	<br>extend Y+
+	<br>extend Y- 
+	<br>extend X-
+	<br>extend X+
+	<br>remove Y+
+	<br>remove Y-
+	<br>remove X-
+	<br>remove X+
+</p>
+<p class="alignright">
+	c
+	<br>h
+	<br>space
+	<br>ctrl + z
+	<br>z
+	<br>mouse wheel
+	<br>up
+	<br>down
+	<br>left
+	<br>right
+	<br>ctrl + down
+	<br>ctrl + up
+	<br>ctrl + right
+	<br>ctrl + left
+</p>
+<div style="clear: both;"></div>
+</div>
+   
+<input id="x-right" type="number" value="0" autocomplete="off" step="1" min="0"/>
+<input id="x-left" type="number" value="0" autocomplete="off" step="1" min="0"/>
+<input id="y-top" type="number" value="0" autocomplete="off" step="1" min="0"/>
+<input id="y-bot" type="number" value="0" autocomplete="off" step="1" min="0"/>
+<input id="input_radius" type="number" value="2" autocomplete="off" step="0.1" min="0"/>   
+
+</body>
+
+<script>
+
+//TODO
+
+//delete part/trace, actions[], undo delete
+//
+//variable hole size
+//
+//default circuits
+//
+//schematic
+//
+
+//var fabmo = new FabMoDashboard()
+
+var g = ""
+var frame1 = []
+var path1 = []
+var verts = 100
+var xmin = -24.1 	//-27.1
+var ymin = -25.4  //-26.5 
+var xmax = 24.1  	//27.1  
+var ymax = 25.4  	//27.1
+var radius = 0.75
+var tool = parseFloat(document.getElementById("input_tool").value/2)
+var scale = 500
+var mouseX=-25.4
+var mouseY= 24.1
+var endX
+var endY
+var line = true
+var xpos = 0
+var hole = []
+var partNum = 0
+var traceNum = []
+
+var o = -5.7135  //x display offset 
+var c
+var ctx
+var sf = 1
+var r = 1
+
+var myConfig = {}
+
+var arduino = []
+var arduino_pins = []
+var pin_outlines = []
+var grid = []
+var vias = []
+var nodes = []
+var pins = []
+var cut = []
+var pocket = []
+var outlines = []
+var pts = []
+var net = [[]]
+var pin = 0
+var connect = []
+var trace = []
+var paths = []
+var on_grid = false
+var pinNum = 0
+var px = 0
+var py = 0
+var pad = 0
+var origin = {X:0,Y:0}
+
+var xo = 0
+var yo = 0
+var seg = 0
+
+var yoffsetTop = 0
+var yoffsetBot = 0
+
+var panY = 0
+var panX = 0
+var pan = false
+
+var zoom = -1
+var click = 0
+var dist = 0
+var start = 0
+
+var pkgOutlines = []
+var temp = []
+var temp2
+var padType
+var finishPass = false
+var select = false
+var partSelected
+
+var key = false
+
+var batteryOutline
+var resistor=[ 
+	[ {X:1,Y:0.85},{X:-0.85,Y:0.85},{X:-0.85,Y:-0.85},{X:0.75,Y:-0.85},{X:0.75,Y:0.85} ],
+	[ {X:3.39,Y:0.85},{X:1.79,Y:0.85},{X:1.79,Y:-0.85},{X:3.39,Y:-0.85},{X:3.39,Y:0.85} ] 
+]
+var resistorOutline=[{X:-0.254,Y:-0.76},{X:2.794,Y:-0.76},{X:2.794,Y:0.76},{X:-0.254,Y:0.76},{X:-0.254,Y:-0.76}]
+var battery=[ 
+	[ {X:-0.85,Y:-0.85},{X:0.85,Y:-0.85},{X:0.85,Y:0.85},{X:-0.85,Y:0.85},{X:-0.85,Y:-0.85} ],
+	[ {X:3.39,Y:-0.85},{X:3.39,Y:0.85},{X:1.69,Y:0.85},{X:1.69,Y:-0.85},{X:3.39,Y:-0.85} ] 
+]
+
+$(window).resize(function(){
+	draw()
+})
+
+$("#myCanvas").on('mousewheel',function(e){
+	e.preventDefault()
+	zoom = parseFloat((zoom+(e.deltaY)).toFixed(3))
+	draw()
+})
+
+$("#myCanvas").on("touchmove", function(e){
+
+	e.preventDefault()
+
+	if (e.originalEvent.touches.length==1) {
+		if(click==0){	
+			x=((e.originalEvent.touches[0].clientX-(10)-(xo)-(ctx.canvas.width/2))/sf)-panX
+			y=((e.originalEvent.touches[0].clientY-(10)-(yo)-(ctx.canvas.height/2))/sf)-panY
+			px=x
+			py=y
+			click=1
+		}
+		else{
+			x=((e.originalEvent.touches[0].clientX-(10)-(xo)-(ctx.canvas.width/2))/sf)
+			y=((e.originalEvent.touches[0].clientY-(10)-(yo)-(ctx.canvas.height/2))/sf)
+			panX=(x-px)
+			panY=(y-py)
+			draw()
+		}
+      
+	}
+	else if (e.originalEvent.touches.length==2) {
+		dist = Math.sqrt((e.originalEvent.touches[0].clientX-e.originalEvent.touches[1].clientX) * (e.originalEvent.touches[0].clientX-e.originalEvent.touches[1].clientX) + (e.originalEvent.touches[0].clientY-e.originalEvent.touches[1].clientY) * (e.originalEvent.touches[0].clientY-e.originalEvent.touches[1].clientY))
+
+		if((parseFloat(start/dist))<1){
+			zoom+=0.25
+		}
+		else{
+			zoom+=-0.25
+		}
+		draw()
+		
+	}
+
+})
+
+$("#myCanvas").on("touchstart", function(e){
+
+	if (e.originalEvent.touches.length==2) {
+		start = Math.sqrt((e.originalEvent.touches[0].clientX-e.originalEvent.touches[1].clientX) * (e.originalEvent.touches[0].clientX-e.originalEvent.touches[1].clientX) + (e.originalEvent.touches[0].clientY-e.originalEvent.touches[1].clientY) * (e.originalEvent.touches[0].clientY-e.originalEvent.touches[1].clientY))
+
+	}
+
+})
+
+$("#myCanvas").on("touchend", function(e){
+	click = 0
+})
+
+$("#grid").on('change', function() {
+
+	$("#help").blur()
+	$("#type").blur()
+	$("#grid").blur()
+
+	makeGrid()
+
+})
+
+$("#type").on('change', function(e) {
+
+	$("#help").blur()
+	$("#type").blur()
+	$("#grid").blur()
+
+	if(document.getElementById("type").value.substring(0,5)=="route"){
+		seg=0
+		trace.push([])
+		net.push([])
+	}
+	
+	if((document.getElementById("type").value!="resistor")&&(pad==1)){
+		console.log(x + " " + y)
+		for(j=0;j<temp.length;j++){
+			trace.push(temp[j])
+		}						
+		pad=0
+		add_trace()
+		net.push([])
+	}
+
+})
+
+$("#myCanvas").on('click', function(e) {
+
+	//console.log(e)
+	$("#help").blur()
+	$("#type").blur()
+	$("#grid").blur()
+
+	x = (((e.clientX-(10)-(xo)-(ctx.canvas.width/2))/sf)-panX)
+	y = (((e.clientY-(10)-(yo)-(ctx.canvas.height/2))/sf)-panY)
+
+		if(pan==false){
+			var d = 0.3
+			var r = 0.85
+			var v = 55
+			var drill = false
+			var skip = false
+
+			if(document.getElementById("type").value=="dip"){
+				drill = true
+			}
+			else if(document.getElementById("type").value=="route"){
+				r = 0.32
+			}
+			else if(document.getElementById("type").value=="routeB"){
+				r = 0.16
+				d = 0.15
+			}
+			else if(document.getElementById("type").value=="routeC"){
+				r = 0.11
+				d = 0.10
+			}
+			else if(document.getElementById("type").value=="routeD"){
+				r = 0.07
+				d = 0.06
+			}
+			else if(document.getElementById("type").value=="hole"){
+				r = 1.27
+				drill="hole"
+			}
+			else if(padType=="0.03"){
+				//finishPass=true
+				r=0.425
+			}
+
+			if((document.getElementById("grid").value)=="0.05"){
+				//finishPass=true
+				var space = 0.635
+			}
+			else if((document.getElementById("grid").value)=="0.025"){
+				//finishPass=true
+				var space = 0.3175
+			}
+			else{
+				var space = 1.27
+			}
+
+
+	
+		for(i=0;i<pts.length;i++){
+
+			if(((Math.abs(x-pts[i].X))<=space) && ((Math.abs(y-pts[i].Y))<=space)){
+
+				endX=pts[i].X
+				endY=pts[i].Y
+
+				if((document.getElementById("type").value=="resistor")||(document.getElementById("type").value=="battery")){
+
+					if(document.getElementById("type").value=="resistor"){
+						temp2 = resistor
+							if(pad==0){
+								pkgOutlines.push([])
+								for(j=0;j<resistorOutline.length;j++){
+									pkgOutlines[pkgOutlines.length-1].push({X:parseFloat((resistorOutline[j].X+(pts[i].X)).toFixed(3)),Y:parseFloat((resistorOutline[j].Y+(pts[i].Y)).toFixed(3)),test:"HI",part:(partNum)})
+							}
+						}
+					}
+					if(document.getElementById("type").value=="battery"){
+						temp2 = battery
+					}
+
+					if(pad==0){
+					temp=[]
+
+					origin={X:(pts[i].X),Y:(pts[i].Y)}
+
+					for(j=0;j<resistor.length;j++){
+					if(seg==1){
+						//net.push([])
+						//seg=0
+					}
+					net[net.length-1].push({X:(pts[i].X),Y:(pts[i].Y),D:drill,T:"res",part:partNum})
+					temp.push([])
+						resistor[j].reverse()
+						for(k=0;k<resistor[j].length;k++){
+							temp[temp.length-1].push({X:parseFloat((resistor[j][k].X+(pts[i].X)).toFixed(3)),Y:parseFloat((resistor[j][k].Y+(pts[i].Y)).toFixed(3))})
+							
+						}
+					
+					}
+						pad=1
+					}
+					else if(pad==1){
+					
+						for(j=0;j<temp.length;j++){
+							trace.push(temp[j])
+						}						
+						pad=2
+						add_trace()
+						net.push([])
+						//console.log(net)
+					}
+					else if(pad==2){
+						pad=0
+					}
+				}
+				//pads
+				if((document.getElementById("type").value!="resistor") && (document.getElementById("type").value!="part") &&(document.getElementById("type").value!="battery")){ 
+
+				if(document.getElementById("type").value=="hole"){
+					hole.push([])
+					for(j=0;j<=v;j++){
+						if(j==0){
+							hole[hole.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*0.9),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*0.9),part:partNum})
+						}
+						else{
+							hole[hole.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*0.9),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*0.9)})
+						}
+					}
+				}
+
+				if(((net[net.length-1].length)==0) && (document.getElementById("type").value!="resistor") ){
+					net[net.length-1].push({X:(pts[i].X),Y:(pts[i].Y),D:drill,part:partNum})
+
+						trace.push([])
+						
+						if(document.getElementById("type").value=="dip"){
+							for(j=0;j<=v;j++){
+								trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*r),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*r)})
+							}
+						}
+						else if(document.getElementById("type").value=="hole"){
+							for(j=0;j<=v;j++){
+								trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*r),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*r)})
+							}
+						}
+						else if(document.getElementById("type").value.substring(0,5)=="route"){
+							for(j=0;j<=v;j++){
+								trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*r),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*r)})
+							}
+						}
+
+						else if((document.getElementById("type").value=="smd")){
+							trace[trace.length-1].push({X:pts[i].X-r,Y:pts[i].Y-r})
+							trace[trace.length-1].push({X:pts[i].X-r,Y:pts[i].Y+r})
+							trace[trace.length-1].push({X:pts[i].X+r,Y:pts[i].Y+r})
+							trace[trace.length-1].push({X:pts[i].X+r,Y:pts[i].Y-r})
+							trace[trace.length-1].push({X:pts[i].X-r,Y:pts[i].Y-r})
+						}
+						else if((pts[i].X==pts[i-1].X) && (pts[i].Y==pts[i-1].Y)){
+
+						}
+	
+				}
+				//resistor
+				//
+				else if((pts[i].X==net[net.length-1][net[net.length-1].length-1].X) && (pts[i].Y==net[net.length-1][net[net.length-1].length-1].Y)){
+				
+				net[net.length-1].push({X:(pts[i].X),Y:(pts[i].Y),D:drill,part:partNum})
+					trace.push([])					
+					for(j=0;j<=4;j++){
+						trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/4*j)*0.1),Y:((pts[i].Y)+Math.cos((Math.PI*2)/4*j)*0.1)})
+					}	
+					trace.push([])					
+					for(j=0;j<=4;j++){
+						trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/4*j)*0.1),Y:((pts[i].Y)+Math.cos((Math.PI*2)/4*j)*0.1)})
+					}
+				}
+				else if(((net[net.length-1].length)>0)){
+
+							var Ax = net[net.length-1][net[net.length-1].length-1].X
+							var Ay = net[net.length-1][net[net.length-1].length-1].Y
+							var Bx = pts[i].X
+							var By = pts[i].Y		
+
+							var ABx =  Bx - Ax
+							var ABy =  By - Ay
+
+							var ABLength = Math.sqrt(ABx*ABx + ABy*ABy)
+
+							var NABx = ABx / ABLength
+							var NABy = ABy / ABLength
+
+							var PNABx = -NABy
+							var PNABy =  NABx					
+
+							var Dx = Ax + ((d)*PNABx)
+							var Dy = Ay + ((d)*PNABy)
+	
+							var Cx = Ax + (-(d)*PNABx)
+							var Cy = Ay + (-(d)*PNABy)
+
+							var Ex = Bx + ((d)*PNABx)
+							var Ey = By + ((d)*PNABy)
+	
+							var Fx = Bx + (-(d)*PNABx)
+							var Fy = By + (-(d)*PNABy)
+
+					if(document.getElementById("type").value.substring(0,5)=="route"){
+						trace.push([{X:Cx,Y:Cy},{X:Dx,Y:Dy},{X:Ex,Y:Ey},{X:Fx,Y:Fy},{X:Cx,Y:Cy}])
+					}
+					else{
+						trace.push([])
+					}
+
+					trace.push([])
+						if((document.getElementById("type").value=="dip")||(document.getElementById("type").value.substring(0,5)=="route")){
+							for(j=0;j<=v;j++){
+								trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*r),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*r)})
+							}
+						}
+						else if(document.getElementById("type").value=="hole"){
+							for(j=0;j<=v;j++){
+								trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*r),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*r)})
+							}
+						}
+
+						else if((document.getElementById("type").value=="smd")){
+
+							trace[trace.length-1].push({X:pts[i].X-r,Y:pts[i].Y-r})
+							trace[trace.length-1].push({X:pts[i].X-r,Y:pts[i].Y+r})
+							trace[trace.length-1].push({X:pts[i].X+r,Y:pts[i].Y+r})
+							trace[trace.length-1].push({X:pts[i].X+r,Y:pts[i].Y-r})
+							trace[trace.length-1].push({X:pts[i].X-r,Y:pts[i].Y-r})		
+
+						}					
+
+					net[net.length-1].push({X:(pts[i].X),Y:(pts[i].Y),D:drill,part:partNum})
+					}
+
+					if(skip==false){
+						if(seg==1){
+							net.push([])	
+							seg = 0
+						}
+						else{
+							seg++
+						}
+					}
+				}
+			}
+		}
+		//part#
+		//console.log(trace)
+		//console.log(net)
+	if(document.getElementById("type").value!="part"){
+		
+		if(document.getElementById("type").value.substring(0,5)=="route"){
+			if(seg==1){
+				//console.log(x + ' ' + y)
+				traceNum.push({node:[endX,endY]})
+				
+			}
+			if(seg==0){
+				traceNum[traceNum.length-1].part = partNum
+				traceNum[traceNum.length-1].trace = [trace.length-1,trace.length-2,trace.length-3]
+				traceNum[traceNum.length-1].node.push(endX)
+				traceNum[traceNum.length-1].node.push(endY)
+				$( "#part-list" ).append( "<option id=\"part" +  partNum + "\"value=\"" + partNum + "\">" + partNum + "</option>" )
+				document.getElementById("part-list").value = partNum
+				partNum++
+				
+				//get line length
+				//setment line
+				//append to part list
+				//
+			}		
+		}
+		else if((document.getElementById("type").value=="resistor")){
+			//console.log(pad)
+			if(seg==0){
+				if(pad==1){
+					traceNum.push({part:partNum,node:[endX,endY]})
+				}				
+				if(pad==0){
+					traceNum[traceNum.length-1].trace = [trace.length-1,trace.length-2]
+
+					$( "#part-list" ).append( "<option id=\"part" +  partNum + "\"value=\"" + partNum + "\">" + partNum + "</option>" )
+					document.getElementById("part-list").value = partNum
+					partNum++
+				}
+			}
+				
+		}
+		else{
+			traceNum.push({part:partNum,trace:[trace.length-1],node:[endX,endY]})
+			$( "#part-list" ).append( "<option id=\"part" +  partNum + "\"value=\"" + partNum + "\">" + partNum + "</option>" )
+			document.getElementById("part-list").value = partNum
+			partNum++
+		}
+			add_trace()
+		}
+		
+	}
+})
+
+
+$("#myCanvas").on('mousedown', function(e) {
+
+	if(document.getElementById("type").value=="smd"){
+		padType=($('#type').find('option:selected').attr('data-part'))
+	}
+	if(pan==true){
+		x = ((e.clientX-(10)-(xo)-(ctx.canvas.width/2))/sf)-panX
+		y = ((e.clientY-(10)-(yo)-(ctx.canvas.height/2))/sf)-panY
+		if(click==0){
+			px = x
+			py = y
+			click = 1
+		}
+	}
+})
+
+$("#myCanvas").on('mouseup', function(e) {
+	if(pan==true){
+		if(click==1){
+			click=0		
+		}
+		draw()
+	}
+})
+
+$("#myCanvas").on('mousemove', function(e) {
+
+	if(document.getElementById("type").value=="smd"){
+		padType=($('#type').find('option:selected').attr('data-part'))
+	}
+
+	mouseX=((e.clientX-(10)-(xo)-(ctx.canvas.width/2))/sf)-panX
+	mouseY=((e.clientY-(10)-(yo)-(ctx.canvas.height/2))/sf)-panY
+
+	if((document.getElementById("grid").value)=="0.05"){
+		var space = 0.635
+	}
+	else if((document.getElementById("grid").value)=="0.025"){
+		var space = 0.3175
+	}
+	else{
+		var space=1.27
+	}
+	
+	if(pan==false){
+		for(i=0;i<pts.length;i++){
+		if(((Math.abs(mouseX-pts[i].X))<=space) && ((Math.abs(mouseY-pts[i].Y))<=space)){
+			mouseX=pts[i].X
+			mouseY=pts[i].Y
+			pinNum=pts[i].PIN
+
+			line = true
+			on_grid=true
+		 	i=pts.length
+		}
+		else{
+			on_grid=false
+			line = false
+		}
+	}
+	add()
+	}
+
+	else if((pan==true)&&(click==1)){
+		x=((e.clientX-(10)-(xo)-(ctx.canvas.width/2))/sf)
+		y=((e.clientY-(10)-(yo)-(ctx.canvas.height/2))/sf)
+		panX=(x-px)
+		panY=(y-py)
+	}
+
+	draw()
+
+})
+
+$(document).keypress(function(e){
+	if(e.which===32){		
+			if(pan==false){
+				pan=true
+			}
+			else{
+				pan=false
+			}
+			draw()
+	}
+})
+
+
+$(document).keydown(function(e){
+
+	if(e.which === 90 && e.ctrlKey){
+		//undo()
+		key=true
+		ripup() 
+	}
+	else if(e.which === 90){
+		zoom = 0
+		panX = 0
+		panY = 0 
+	}
+	else if(e.which === 39 && e.ctrlKey){
+		if(((document.getElementById("x-left").value)>0)&&(document.getElementById("board").value=="arduino")){
+			(document.getElementById("x-left").value)--
+			$(document.getElementById("x-left")).trigger("change")
+		}
+		else if(document.getElementById("board").value=="blank"){
+			(document.getElementById("x-left").value)--
+			$(document.getElementById("x-left")).trigger("change")
+		}
+	}
+	else if(e.which === 40 && e.ctrlKey){
+		if(((document.getElementById("y-top").value)>0)&&(document.getElementById("board").value=="arduino")){
+			(document.getElementById("y-top").value)--
+			$(document.getElementById("y-top")).trigger("change")
+		}
+		else if(document.getElementById("board").value=="blank"){
+			(document.getElementById("y-top").value)--
+			$(document.getElementById("y-top")).trigger("change")
+		} 
+	}
+	else if(e.which === 37 && e.ctrlKey){
+		if(((document.getElementById("x-right").value)>0)&&(document.getElementById("board").value=="arduino")){
+			(document.getElementById("x-right").value)--
+			$(document.getElementById("x-right")).trigger("change")
+		} 
+		else if(document.getElementById("board").value=="blank"){
+			(document.getElementById("x-right").value)--
+			$(document.getElementById("x-right")).trigger("change")
+		}
+	}
+	else if(e.which === 38 && e.ctrlKey){
+		if(((document.getElementById("y-bot").value)>0)&&(document.getElementById("board").value=="arduino")){
+			(document.getElementById("y-bot").value)--
+			$(document.getElementById("y-bot")).trigger("change")
+		} 
+		else if(document.getElementById("board").value=="blank"){
+			(document.getElementById("y-bot").value)--
+			$(document.getElementById("y-bot")).trigger("change")
+		}
+	}
+	else if(e.which === 37){
+		(document.getElementById("x-left").value)++
+		$(document.getElementById("x-left")).trigger("change")
+	}
+	else if(e.which === 38){
+		(document.getElementById("y-top").value)++
+		$(document.getElementById("y-top")).trigger("change")
+	}
+	else if(e.which === 39){
+		(document.getElementById("x-right").value)++
+		$(document.getElementById("x-right")).trigger("change") 
+	}
+	else if(e.which === 40){
+		(document.getElementById("y-bot").value)++
+		$(document.getElementById("y-bot")).trigger("change")
+	}
+	else if(e.which === 67){
+
+		//clear all
+		$("#part-list").empty()
+		$( "#part-list" ).append( "<option value=\"part\" selected disabled>part#</option>" )
+		partNum = 0
+		traceNum = []
+		passA = []
+
+		finishPass=false
+
+		document.getElementById("y-top").value=0
+		document.getElementById("y-bot").value=0
+		document.getElementById("x-left").value=0
+		document.getElementById("x-right").value=0
+
+		if(document.getElementById("board").value=="arduino"){
+			xmin = -24.1 
+			ymin = -25.4   
+			xmax = 24.1  	 
+			ymax = 25.4  
+		}
+		else if(document.getElementById("board").value=="blank"){
+			xmax=12.7
+			xmin=-12.7
+			ymax=12.7
+			ymin=-12.7
+		}
+
+		hole=[]
+		pkgOutlines = []
+		trace = []
+		pad = 0
+		net = [[]]
+		temp = []
+		zoom = 0
+		panX = 0
+		panY = 0
+		line = false
+		seg = 0
+		makeFrame(radius)
+		makeGrid()
+		add_trace()
+
+	}
+
+	else if(e.which === 72){
+		help()
+	}
+
+	draw()
+          
+})
+
+function help(){
+	$("#help").blur()
+	$("#help-div").toggle()
+	draw()
+}
+
+
+
+if(document.getElementById("board").value=="blank"){
+	xmin = -12.7
+	ymin = -12.7
+	xmax = 12.7 
+	ymax = 12.7
+	radius = 1.27
+}
+
+$("#x-right").on("change", function(){
+
+	if((document.getElementById("board").value)=="arduino"){
+		xmax=24.1+(parseFloat(document.getElementById("x-right").value)*2.54)
+	}
+	else if((document.getElementById("board").value)=="blank"){
+		xmax=12.7+(parseFloat(document.getElementById("x-right").value)*2.54)
+		if(xmax<2.54){
+			xmax=2.54
+			document.getElementById("x-right").value=-4
+		}
+	}
+	makeFrame(radius)
+	makeGrid()
+	add_trace()
+})
+
+$("#x-left").on("change", function(){
+
+	if((document.getElementById("board").value)=="arduino"){
+		xmin=-24.1-(parseFloat(document.getElementById("x-left").value)*2.54)
+	}
+	else if((document.getElementById("board").value)=="blank"){
+		xmin=-12.7-(parseFloat(document.getElementById("x-left").value)*2.54)
+		if(xmin>-2.54){
+			xmin=-2.54
+			document.getElementById("x-left").value=-4
+		}
+	}
+	makeFrame(radius)
+	makeGrid()
+	add_trace()
+
+})
+
+
+$("#finish").on("change", function(){
+
+	if(document.getElementById("finish").checked==true){
+		finishPass=true
+	}
+	else{
+		finishPass=false
+	}
+	add_trace()
+
+})
+
+$("#part-list").on("change", function(){
+	draw()
+})
+
+$('.parts').hover(function(e) {
+	console.log(e.target);
+});
+
+
+$("#board").on("change", function(){
+
+$("#board").blur()
+
+$("#part-list").empty()
+$( "#part-list" ).append( "<option value=\"part\" selected disabled>part#</option>" )
+partNum = 0
+traceNum = []
+passA = []
+finishPass=false
+
+hole=[]
+pkgOutlines = []
+trace = []
+pad = 0
+net = [[]]
+temp = []
+zoom = -1
+panX = 0
+panY = 0
+line = false
+seg = 0
+
+console.log(zoom)
+
+if(document.getElementById("board").value=="arduino"){
+	xmin = -24.1 
+	ymin = -25.4   
+	xmax = 24.1  	 
+	ymax = 25.4 
+	document.getElementById("x-left").value=0
+	document.getElementById("x-right").value=0
+	document.getElementById("y-top").value=0
+	document.getElementById("y-bot").value=0
+	radius = 0.75
+	makeFrame(radius) 
+	makeGrid()
+}
+else if(document.getElementById("board").value=="blank"){
+	xmin = -12.7
+	ymin = -12.7
+	xmax = 12.7	  
+	ymax = 12.7
+	document.getElementById("x-left").value=0
+	document.getElementById("x-right").value=0
+	document.getElementById("y-top").value=0
+	document.getElementById("y-bot").value=0
+	radius = 1.27
+	makeFrame(radius) 
+	makeGrid()
+}
+
+add_trace()
+
+})
+
+$("#y-top").on("change", function(){
+
+	if((document.getElementById("board").value)=="arduino"){
+		if((parseFloat(document.getElementById("y-top").value))==1){
+			ymin=-25.4-2.44
+		}
+		else if((parseFloat(document.getElementById("y-top").value))==0){
+			ymin=-25.4
+		}
+		else{
+			ymin=-25.4-2.44-((parseFloat(document.getElementById("y-top").value)-1)*2.54)
+		}
+	}
+	else if((document.getElementById("board").value)=="blank"){
+		ymin=-12.7-(parseFloat(document.getElementById("y-top").value)*2.54)
+			if(ymin>-2.54){
+				ymin=-2.54
+				document.getElementById("y-top").value=-4
+			}
+	}
+	makeFrame(radius)
+	makeGrid()
+	add_trace()
+
+})
+
+$("#y-bot").on("change", function(){
+
+	if((document.getElementById("board").value)=="arduino"){
+		if((parseFloat(document.getElementById("y-bot").value))==1){
+			ymax=25.4+2.44
+		}
+		else if((parseFloat(document.getElementById("y-bot").value))==0){
+			ymax=25.4
+		}
+		else{
+			ymax=25.4+2.44+((parseFloat(document.getElementById("y-bot").value)-1)*2.54)
+		}
+	}
+	else if((document.getElementById("board").value)=="blank"){
+		ymax=12.7+(parseFloat(document.getElementById("y-bot").value)*2.54)
+			if(ymax<2.54){
+				ymax=2.54
+				document.getElementById("y-bot").value=-4
+			}
+	}
+	makeFrame(radius)
+	makeGrid()
+	add_trace()
+
+})
+
+function load(){
+	
+	//if(fabmo.isPresent()==false){
+		myConfig = localStorage.getItem("default")
+		if(myConfig!=null){
+			myConfig = JSON.parse(myConfig)
+
+			loadConfig(myConfig)
+		}
+		add_trace()
+	//}
+	/*
+	else if(fabmo.isPresent()==true){
+		fabmo.getAppConfig(function(err, myConfig) {
+			if(myConfig.finishPass!=undefined){
+				loadConfig(myConfig)
+			}
+		})
+	}
+	*/
+
+	function loadConfig(myConfig){
+
+		finishPass = myConfig.finishPass
+
+		document.getElementById("side").value = myConfig.side
+		document.getElementById("grid").value = myConfig.grid
+
+		document.getElementById("board").value = myConfig.board
+		$(document.getElementById("board")).trigger("change")
+
+		document.getElementById("x-left").value = myConfig.xmin	
+		document.getElementById("x-right").value = myConfig.xmax
+		document.getElementById("y-top").value = myConfig.ymin
+		document.getElementById("y-bot").value = myConfig.ymax
+
+		$(document.getElementById("x-left")).trigger("change")
+		$(document.getElementById("x-right")).trigger("change")
+		$(document.getElementById("y-top")).trigger("change")
+		$(document.getElementById("y-bot")).trigger("change")
+
+		pkgOutlines = myConfig.pkgOutlines
+		trace = myConfig.trace
+		net = myConfig.net
+		partNum = myConfig.partNum
+		traceNum = myConfig.traceNum
+		for(i=0;i<traceNum.length;i++){
+			$( "#part-list" ).append( "<option id=\"part" +  traceNum[i].part + "\"value=\"" + traceNum[i].part + "\">" + traceNum[i].part + "</option>" )
+		}
+		add_trace()
+	}
+
+}
+
+function save(){
+	
+	myBoard.trace = trace
+	myBoard.net = net
+	myBoard.xmin = document.getElementById("x-left").value
+	myBoard.xmax = document.getElementById("x-right").value
+	myBoard.ymin = document.getElementById("y-top").value
+	myBoard.ymax = document.getElementById("y-bot").value
+	myBoard.hole = hole
+	myBoard.board = document.getElementById("board").value
+	myBoard.side = document.getElementById("side").value
+	myBoard.grid = document.getElementById("grid").value
+	myBoard.finishPass = finishPass
+	myBoard.pkgOutlines = pkgOutlines
+	myBoard.traceNum = traceNum
+	myBoard.partNum = partNum
+
+	if(fabmo.isPresent()==false){
+		localStorage.setItem("default",JSON.stringify(myBoard))	
+	}
+	else if(fabmo.isPresent()==true){
+		fabmo.setAppConfig(myBoard)
+	}	
+
+}
+
+function ripup(){
+
+	console.log(traceNum)
+	
+	if((pad==1)&&(document.getElementById("type").value=="resistor")){
+
+		pkgOutlines.pop()
+		pad=0
+		traceNum.pop()
+		temp=[]
+
+	}
+	else if((seg==1)&&(document.getElementById("type").value.substring(0,5)=="route")){
+
+		seg=0
+		traceNum.pop()
+		net.pop()
+		trace.pop()
+
+		trace.push([])
+		net.push([])
+
+	}
+	else{
+
+	temp=[]
+
+	$( "#select" ).blur()
+
+	if(key==false){
+		remove = parseInt(document.getElementById("part-list").value)
+	}
+	else{
+		remove = $('#part-list option:last-child').val();
+	}
+	
+	document.getElementById("part-list").value = "part"
+	
+	$( "#part"+remove ).remove()
+	
+	for(i=0;i<hole.length;i++){
+		if(hole[i][0].part==remove){
+			hole.splice(i,1)
+		}
+	}
+
+	for(i=0;i<net.length;i++){
+		for(j=0;j<net[i].length;j++){
+			if(net[i][j].part==remove){
+				net[i].splice(j,1)
+				j--
+			}
+		}
+	}
+	
+	for(i=0;i<traceNum.length;i++){
+		if(traceNum[i].part==remove){
+			//console.log(traceNum[i].trace.length)
+			if(traceNum[i].trace.length==3){
+				trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[],[],[])
+			}
+			else if(traceNum[i].trace.length==2){
+				trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[],[])
+			}
+			else{
+			trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[])
+			}
+			traceNum.splice(i,1)
+			i--
+		}
+	}
+
+	for(i=0;i<pkgOutlines.length;i++){
+		if(pkgOutlines[i][0].part==remove){
+			pkgOutlines.splice(i,1)
+		}
+	}
+
+
+	}
+
+	key=false
+	
+
+	document.getElementById("part-list").value = $('#part-list option:last-child').val()
+
+	add_trace()
+	
+}
+
+</script>
+
+
+</html>
+

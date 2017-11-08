@@ -1,0 +1,252 @@
+
+body{
+	background:#eee;
+	color: #555;
+	font-size: 15px;
+	font-family: arial;
+}
+
+#myCanvas{
+   cursor: crosshair;
+}
+
+input{
+	position: absolute;
+	width: 72px;
+	height: 24px;
+}
+
+#finish{
+	position: absolute;
+	right: 0px;
+	top: 200px;
+}
+
+#finishPass{
+	position: absolute;
+	right: 55px;
+	top: 205px;
+}
+
+#input_submit{
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	width:100px;
+	height:100px;
+}
+
+#y-origin{
+	position: absolute;
+	right: 10px;
+	bottom: 170px;
+	width: 45px;
+}
+
+#x-origin{
+	position: absolute;
+	right: 10px;
+	bottom: 210px;
+	width: 45px;
+}
+#origin{
+	position: absolute;
+	right: 10px;
+	bottom: 250px;
+}
+#originx{
+	position: absolute;
+	right: 75px;
+	bottom: 220px;
+}
+#originy{
+	position: absolute;
+	right: 75px;
+	bottom: 180px;
+}
+
+#input_save{
+	position: absolute;
+	left: 10px;
+	bottom: 10px;
+	width:100px;
+	height:100px;
+}
+
+#input_depth{
+	display: none;
+	position: absolute;
+	right: 30px;
+	bottom: 150px;
+	width: 92px;
+}
+
+depth{
+	display: none;
+	position: absolute;
+	right: 60px;
+	bottom: 184px;
+	font-family: arial;
+	font-size: 16px;
+	color: #333;
+}
+
+#input_tool{
+	display: none;
+	position: absolute;
+	right: 30px;
+	bottom: 200px;
+	width: 92px;
+}
+
+#input_radius{
+	display: none;
+}
+
+#undo{
+	display: none;
+	position: absolute;
+	right: 10px;
+	top: 60px;
+	width:170px;
+	height:37px;
+}
+
+#type{
+	position: absolute;
+	right: 10px;
+	top:   60px;
+	width: 170px;
+	height: 37px;
+}
+
+#x-right{
+	display: none;
+	position: absolute;
+	right: 30px;
+	top:   50%;
+	width: 83px;
+	height: 25px;
+}
+
+#x-left{
+	display: none;
+	position: absolute;
+	left: 30px;
+	top:   50%;
+	width: 83px;
+	height: 25px;
+}
+
+#y-top{
+	display: none;
+	position: absolute;
+	right: 13%;
+	top:   10px;
+	width: 83px;
+	height: 25px;
+}
+
+#y-bot{
+	display: none;
+	position: absolute;
+	right: 13%;
+	bottom: 20px;
+	width: 83px;
+	height: 25px;
+}
+
+#help{
+	position: absolute;
+	left: 10px;
+	top: 14px;
+	width: 120px;
+	height: 37px;
+}
+
+#select{
+	/*display: none;*/
+	position: absolute;
+	position: absolute;
+	left: 10px;
+	top: 150px;
+	width: 120px;
+	height: 37px;
+}
+
+#board{
+	position: absolute;
+	left: 10px;
+	top: 60px;
+	width: 120px;
+	height: 37px;
+}
+
+#part-list{
+	position: absolute;
+	left: 10px;
+	top: 105px;
+	width: 120px;
+	height: 37px;
+}
+
+#side{
+	/*display: none;*/
+	position: absolute;
+	right: 10px;
+	top: 150px;
+	width: 170px;
+	height: 37px;
+}
+
+#grid{
+	position: absolute;
+	right: 10px;
+	top: 105px;
+	width: 170px;
+	height: 37px;
+}
+
+#project{
+	display: none;
+	position: absolute;
+	left: 10px;
+	bottom: 130px;
+	width: 100px;
+	height: 37px;
+}
+
+#file{
+	position: absolute;
+	right: 10px;
+	bottom: 120px;
+	width: 100px;
+	height: 37px;
+}
+
+
+#help-div{
+	display:none;
+	position: absolute;
+	left: 8px;
+	top: 62px;
+	width: 190px;
+	height: 430px;
+	background: rgba(76, 175, 80, 0.5);
+	padding: 20px;
+	border-radius: 25px;
+	color: #fff;
+	font-size: 15px;
+	font-family: arial;
+}
+
+.alignleft {
+	float: left;
+}
+.alignright {
+	float: right;
+}
+.aligncenter {
+ 	text-align: center; 
+}
+
