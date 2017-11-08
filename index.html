@@ -17,7 +17,7 @@
 
 <body onload="makeFrame(radius); parts();">
 
-<select id="type" autocomplete="on">
+<select class="input" id="type" autocomplete="on">
   <option value="part" selected disabled>&#43; parts</option>
   <option value="hole">hole (0.1"&#8960;)</option>
   <option value="dip">pad (DIP)</option>
@@ -30,17 +30,17 @@
   <option value="resistor">SMD (1206)</option>
 </select>
 
-<select id="board" autocomplete="on">
+<select class="input" id="board" autocomplete="on">
   <option value="arduino" selected>Arduino</option>
   <option value="blank">blank</option>
 </select>
 
-<select id="side" autocomplete="on">
+<select  class="input" id="side" autocomplete="on">
   <option value="top" selected>side: top</option>
   <option value="back">side: back</option>
 </select>
 
-<select id="grid" autocomplete="on">
+<select  class="input" id="grid" autocomplete="on">
   <option value="0.025">grid: 0.025"</option>
   <option value="0.05">grid: 0.05"</option>
   <option value="0.1" selected>grid: 0.1"</option>
@@ -78,7 +78,7 @@ y:
 <input id="undo" type="submit" value="UNDO" onclick="undo()"/>
 <input id="select" type="submit" value="delete" onclick="ripup()"/>
 
-<select id="file" autocomplete="off">
+<select  class="input" id="file" autocomplete="off">
   <option value="gcode">G-code inch (.tap)</option>
   <option value="rml" selected>Modela (.rml)</option>
   <option value="sbp">ShopBot (.sbp)</option>
@@ -86,7 +86,7 @@ y:
 
 <button id="input_submit" onclick="make()">MAKE</button>
 
-<select id="part-list" autocomplete="off">
+<select  class="input" id="part-list" autocomplete="off">
   <option value="part" selected disabled>part#</option>
 </select>
 
@@ -151,6 +151,9 @@ y:
 	<br>shift + right
 	<br>shift + left
 </p>
+
+<center><a href="https://www.github.com/jw4rd/shield">gitHub</a></center>
+
 <div style="clear: both;"></div>
 </div>
    
@@ -754,6 +757,11 @@ $(document).keypress(function(e){
 
 $(document).keydown(function(e){
 
+	//console.log($("#x-origin").is(':focus'))
+
+	if(($("#x-origin").is(':focus')==false) && ($("#y-origin").is(':focus')==false) && ($(".input").is(':focus')==false)){
+
+
 	if(e.which === 90 && (e.shiftKey||e.ctrlKey)){
 		//undo()
 		key=true
@@ -870,6 +878,9 @@ $(document).keydown(function(e){
 		help()
 	}
 
+
+	}
+
 	draw()
           
 })
@@ -905,6 +916,11 @@ $("#x-right").on("change", function(){
 	makeFrame(radius)
 	makeGrid()
 	add_trace()
+})
+
+
+$("#x-origin").on("click", function(){
+	$("#mycanvas").blur()
 })
 
 $("#x-left").on("change", function(){
