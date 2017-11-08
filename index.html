@@ -754,7 +754,7 @@ $(document).keypress(function(e){
 
 $(document).keydown(function(e){
 
-	if(e.which === 90 && e.ctrlKey){
+	if(e.which === 90 && e.shiftKey){
 		//undo()
 		key=true
 		ripup() 
@@ -764,7 +764,7 @@ $(document).keydown(function(e){
 		panX = 0
 		panY = 0 
 	}
-	else if(e.which === 39 && e.ctrlKey){
+	else if(e.which === 39 && e.shiftKey){
 		if(((document.getElementById("x-left").value)>0)&&(document.getElementById("board").value=="arduino")){
 			(document.getElementById("x-left").value)--
 			$(document.getElementById("x-left")).trigger("change")
@@ -774,7 +774,7 @@ $(document).keydown(function(e){
 			$(document.getElementById("x-left")).trigger("change")
 		}
 	}
-	else if(e.which === 40 && e.ctrlKey){
+	else if(e.which === 40 && e.shiftKey){
 		if(((document.getElementById("y-top").value)>0)&&(document.getElementById("board").value=="arduino")){
 			(document.getElementById("y-top").value)--
 			$(document.getElementById("y-top")).trigger("change")
@@ -784,7 +784,7 @@ $(document).keydown(function(e){
 			$(document.getElementById("y-top")).trigger("change")
 		} 
 	}
-	else if(e.which === 37 && e.ctrlKey){
+	else if(e.which === 37 && e.shiftKey){
 		if(((document.getElementById("x-right").value)>0)&&(document.getElementById("board").value=="arduino")){
 			(document.getElementById("x-right").value)--
 			$(document.getElementById("x-right")).trigger("change")
@@ -794,7 +794,7 @@ $(document).keydown(function(e){
 			$(document.getElementById("x-right")).trigger("change")
 		}
 	}
-	else if(e.which === 38 && e.ctrlKey){
+	else if(e.which === 38 && e.shiftKey){
 		if(((document.getElementById("y-bot").value)>0)&&(document.getElementById("board").value=="arduino")){
 			(document.getElementById("y-bot").value)--
 			$(document.getElementById("y-bot")).trigger("change")
