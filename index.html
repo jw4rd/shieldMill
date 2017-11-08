@@ -68,8 +68,8 @@ x:
 y:
 </t>
 
-<input id="x-origin" type="number" value="0.1" autocomplete="on" step="0.1"/>
-<input id="y-origin" type="number" value="0.1" autocomplete="on" step="0.1"/>
+<input id="x-origin" type="number" value="0.1" autocomplete="on" step="0.01"/>
+<input id="y-origin" type="number" value="0.1" autocomplete="on" step="0.01"/>
 
 <input id="help" type="submit" value="setup" onclick="help()"/>
 <input id="input_tool" type="number" value="0.79" autocomplete="on" step="0.01"/>
@@ -139,17 +139,17 @@ y:
 	c
 	<br>h
 	<br>space
-	<br>ctrl + z
+	<br>ctrl/shift + z
 	<br>z
 	<br>mouse wheel
 	<br>up
 	<br>down
 	<br>left
 	<br>right
-	<br>ctrl + down
-	<br>ctrl + up
-	<br>ctrl + right
-	<br>ctrl + left
+	<br>shift + down
+	<br>shift + up
+	<br>shift + right
+	<br>shift + left
 </p>
 <div style="clear: both;"></div>
 </div>
@@ -754,7 +754,7 @@ $(document).keypress(function(e){
 
 $(document).keydown(function(e){
 
-	if(e.which === 90 && e.shiftKey){
+	if(e.which === 90 && (e.shiftKey||e.ctrlKey)){
 		//undo()
 		key=true
 		ripup() 
