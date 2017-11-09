@@ -14,6 +14,8 @@ The toolpath is generated as the board is designed.
 
 ![shield](https://raw.github.com/jw4rd/shieldmill/master/img/screenshot.png)  
 
+![shield](https://raw.github.com/jw4rd/shieldmill/master/img/pcbs.jpg)  
+
 ## Getting Started
 
 The "setup" button in the uppler left corner will open a window that displays the current settings and keyboard shortcuts.
