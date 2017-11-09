@@ -49,7 +49,7 @@ Pressing the "c" key or refreshing the browser will delete all of the design and
 
 ![shield](https://raw.github.com/jw4rd/shieldmill/master/img/zoom.png)  
 
-The "origin offset" inputs in the lower left will offset the cut file relative to the home position of the milling machine used
+The "origin offset" inputs in the lower right corner will offset the cut file relative to the home position of the milling machine used
 to cut the circuit board.
 
 That's it!  
