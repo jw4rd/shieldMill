@@ -12,7 +12,7 @@ I developed this app to easily prototype simple breakout boards and Shields to c
 The "MAKE" button will download a toolpath for a 1/32" endmill, and there is a checkbox to select an optional finishing pass with a 1/64" endmill.  
 The toolpath is generated as the board is designed.
 
-###screenshot
+### screenshot
 
 ![shield](https://raw.github.com/jw4rd/shield/master/img/screenshot.png)  
 
