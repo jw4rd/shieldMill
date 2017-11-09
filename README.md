@@ -55,7 +55,7 @@ there will be a second downloaded "filename_64".
 ![shield](https://raw.github.com/jw4rd/shield/master/img/pcb.png)  
 -->
 
-note: The 1/32" toolpath will clear and cutout the board, but it will leave small tabs holding the board in place. These tabs will hold the board in
+note: The 1/32" toolpath will clear and cutout the board, and it will leave small tabs holding the board in place. These tabs will hold the board in
 place for the 1/64" finishing pass, and a small flat head screwdriver can be used for breaking the tabs to remove the circuit board.  
 
 <!---
