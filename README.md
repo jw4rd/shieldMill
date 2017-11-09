@@ -36,9 +36,9 @@ A part can be added to the board design by clicking the "parts" menu in the uppe
 Parts can be deleted by clicking the part # menu in the uppler left and the delete button. Holding the "shift" key and pressing "z" will also delete
 the last part created.  
 
-<!---
+
 ![shield](https://raw.github.com/jw4rd/shield/master/img/pcb_design.png)  
--->
+
 
 The mousewheel or a two finger motion on the track pad will zoom in and out. 
 Pressing the "space" button will enable/disable pan. 
