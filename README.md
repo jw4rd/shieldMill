@@ -4,7 +4,7 @@ Shield Mill is a web application for designing and milling simple Arduino Shield
 This app will export a file for machining a circuit board with a ShopBot, Roland Modela, and standard G-code file that will
 work with many different CNC milling machines. This app works best in Firefox and Chrome. 
 
-[DEMO](http://jw4rd.github.io/shieldmill/)  
+[DEMO](http://jw4rd.github.io/shieldMill/)  
 
 I developed this app to easily prototype simple breakout boards and Shields to connect to other devices. 
 The "MAKE" button will download a toolpath for a 1/32" endmill, and there is a checkbox to select an optional finishing pass with a 1/64" endmill.  
