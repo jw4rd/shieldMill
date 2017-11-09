@@ -1,14 +1,18 @@
 ## Overview
 
-Shield is a web application for designing and milling simple Arduino Shields and circuit boards with 0.063 inch thick FR-1 material.
+Shield is a web application for designing and milling simple Arduino Shields and circuit boards with 0.063 inch thick FR-1 PCB material.
 This app will export a file for machining a circuit board with a ShopBot, Roland Modela, and standard G-code file that will
 work with many different CNC milling machines. This app has been tested with Firefox and Chrome. 
+
+
 
 [DEMO](http://jw4rd.github.io/shield/)  
 
 I developed this app to easily prototype simple breakout boards and Shields to connect to other devices. 
 The "MAKE" button will download a toolpath for a 1/32" endmill, and there is a checkbox to select an optional finishing pass with a 1/64" endmill.  
 The toolpath is generated as the board is designed.
+
+###screenshot
 
 ![shield](https://raw.github.com/jw4rd/shield/master/img/screenshot.png)  
 
