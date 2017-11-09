@@ -52,7 +52,7 @@ to cut the circuit board.
 
 That's it!  
 When the design is done select the machine you are using and click "MAKE". This will prompt you for a filename and download a file to the
-downloads location of your device and send to milling machine.  The cut file for the 1/32" endmill will be "filename_32" and if the 1/64" pass checkbox is selected
+downloads location of your device.  The cut file for the 1/32" endmill will be "filename_32" and if the 1/64" pass checkbox is selected
 there will be a second downloaded "filename_64".  
 
 <!---
