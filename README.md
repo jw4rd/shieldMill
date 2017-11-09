@@ -1,6 +1,6 @@
 ## Overview
 
-shieldMill is a web application for designing and milling simple Arduino Shields and circuit boards with 0.063 inch thick FR-1 PCB material.
+Shield Mill is a web application for designing and milling simple Arduino Shields and circuit boards with 0.063 inch thick FR-1 PCB material.
 This app will export a file for machining a circuit board with a ShopBot, Roland Modela, and standard G-code file that will
 work with many different CNC milling machines. This app works best with Firefox and Chrome. 
 
