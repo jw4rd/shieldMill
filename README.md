@@ -14,10 +14,10 @@ The toolpath is generated as the board is designed.
 
 ## Getting Started
 
-![shield](https://raw.github.com/jw4rd/shield/master/img/setup.png)  
-
 The "setup" button in the uppler left corner will open a window that displays the current settings and keyboard shortcuts.
 Clicking "setup" will also display dimensions of the circuit board.  
+
+![shield](https://raw.github.com/jw4rd/shield/master/img/setup.png)  
 
 The size of the board can be changed by using the arrow keys to increase the 
 board size by 0.1 inch in any direction. The board size can be reduced by
@@ -48,7 +48,7 @@ to cut the circuit board.
 
 That's it!  
 When the design is done select the machine you are using and click "MAKE". This will prompt you for a filename and download a file to the
-downloads location of your device and send to milling machine.  The cut file for the 1/32" endmill will be your "filename_32" and if the 1/64" pass checkbox is selected
+downloads location of your device and send to milling machine.  The cut file for the 1/32" endmill will be "filename_32" and if the 1/64" pass checkbox is selected
 there will be a second downloaded "filename_64".  
 
 <!---
