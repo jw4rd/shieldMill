@@ -1,6 +1,9 @@
 var passB = []
 var myBoard = new Object()
 
+vcut = []
+pins = []
+
 function parts(){
 
 	arduino.push( [{X:-34+o,Y:-26.5},{X:31+o,Y:-26.5},{X:31+o,Y:-13.5},{X:34+o,Y:-10.5},{X:34+o,Y:21.5},{X:31+o,Y:24.5},{X:31+o,Y:26.5},{X:-34+o,Y:26.5},{X:-34+o,Y:22.5}] )
@@ -164,8 +167,67 @@ function add_trace(){
 		traces.push([])
 		for(j=0;j<trace[i].length;j++){
 			traces[traces.length-1].push({X:parseInt(trace[i][j].X*scale),Y:parseInt(trace[i][j].Y*scale)})
-		}
 	}
+
+	}
+////////////////////
+
+	
+		for(i=0;i<traces.length;i++){
+
+			//temp = ClipperLib.Clipper.SimplifyPolygon(traces[i], ClipperLib.PolyFillType.pftNonZero)
+
+			//console.log(temp)
+
+			//if(temp.length>0){
+				//trace[i]=temp[0]
+			//}
+		}
+
+
+
+	//for(i=0;i<trace.length;i++){
+
+
+
+	//temp = ClipperLib.Clipper.SimplifyPolygon(trace[i], ClipperLib.PolyFillType.pftNonZero)
+
+	//console.log(temp)
+	//}
+
+	//traces.push(path1)
+
+	//console.log(path1)
+
+	for(i=0;i<trace.length;i++){
+
+		o3 = ClipperLib.Clipper.Orientation(traces[i])
+
+		if(o3==true){
+			traces[i].reverse()
+		}
+
+	}
+
+
+	//trace = ClipperLib.Clipper.SimplifyPolygons(trace, ClipperLib.PolyFillType.pftNonZero)
+
+	//simplify
+
+
+
+	//
+
+	//clear all for milling
+
+
+
+	//
+
+
+	
+
+	//
 
 	var cpr = new ClipperLib.Clipper()
 	cpr.AddPaths(traces, ClipperLib.PolyType.ptSubject, true)
@@ -178,16 +240,88 @@ function add_trace(){
 		solution_paths[i].push(solution_paths[i][0])
 	}
 
-	//solution_paths.push([])
-	//for(i=0;i<frame1.length;i++){
-	//	solution_paths[solution_paths.length-1].push({X:parseInt(frame1[i].X*scale),Y:parseInt(frame1[i].Y*scale)})
-	//}
 
-	var co = new ClipperLib.ClipperOffset(scale*0.4, 0.25)
+	
+
+	if(millAll==true){
+
+	solution_paths.push([])
+	for(i=0;i<path1.length;i++){
+
+		solution_paths[solution_paths.length-1].push({X:parseInt(path1[i].X*scale),Y:parseInt(path1[i].Y*scale)})
+
+	}	
+
+
+	}
+
+
+
+	
+	//solution_paths.push(path1.reverse())
+
+
+
+	vpins = JSON.parse(JSON.stringify(pins))
+
+//	console.log(pins)
+
+	for(i=0;i<vpins.length;i++){
+		
+		if(i<16){
+			vpins[i][0].Y=vpins[i][0].Y-0.3
+			vpins[i][vpins[i].length-1].Y=vpins[i][vpins[i].length-1].Y+0.3
+		}
+		else if((i<28)&&(i>15)){
+			vpins[i][0].Y=vpins[i][0].Y+0.3
+			vpins[i][vpins[i].length-1].Y=vpins[i][vpins[i].length-1].Y-0.3
+		}
+
+		if(i<28){
+			for(j=0;j<vpins[i].length;j++){
+				vpins[i][j].X=vpins[i][j].X-0.2
+			}
+		}
+	}
+
+
+
+
+	t	= JSON.parse(JSON.stringify(vpins))
+
+	for(i=0;i<28;i++){
+		for(j=0;j<t[i].length;j++){
+			t[i][j].X=t[i][j].X+0.4
+		}
+	}
+
+
+	//console.log(vpins.length)
+	//console.log(t.length)
+
+	j=0
+	for(i=0;i<28;i++){
+		vpins.splice(i+j,0,t[i])
+		j++
+	}
+
+
+
+	
 
 	//co.ArcTolerance = 1.23
 	//co.MiterLimit = 0.7
 
+	//vcut = JSON.parse(JSON.stringify(solution_paths))
+
+	var co2 = new ClipperLib.ClipperOffset(scale*0.4, 0.25) 
+	co2.AddPaths(solution_paths, ClipperLib.JoinType.jtMiter, ClipperLib.EndType.etClosedPolygon, 0.25)
+	vcut = new ClipperLib.Paths()
+	co2.Execute(vcut, (scale*0.12))
+	//co2.Execute(vcut, -(scale*0.3))
+
+
+	var co = new ClipperLib.ClipperOffset(scale*0.4, 0.25)
 	co.AddPaths(solution_paths, ClipperLib.JoinType.jtMiter, ClipperLib.EndType.etClosedPolygon, 0.25)
 
 	var oset = []
@@ -198,7 +332,13 @@ function add_trace(){
 	if(finishPass==true){
 		passB = []
 		offset = new ClipperLib.Paths()
-		co.Execute(offset, (scale*0.2))
+
+		if(millAll==true){
+			co.Execute(offset, -(scale*0.2))
+		}
+		else{
+			co.Execute(offset, (scale*0.2))
+		}
 
 		for(i=0;i<offset.length;i++){
 			//offset[i].reverse()
@@ -210,10 +350,14 @@ function add_trace(){
 	i=1
 	var toolOffset = 0.41
 
+	if(millAll==false){
+
 	while(i<3){
 
 		offset = new ClipperLib.Paths()
-		co.Execute(offset, (scale*toolOffset)*i)
+		
+			co.Execute(offset, (scale*toolOffset)*i)
+
 		i++
 		for(j=0;j<offset.length;j++){
 			oset.push(offset[j])
@@ -233,6 +377,46 @@ function add_trace(){
 
 		}
 	}
+
+}
+else{
+
+
+	clear=true
+
+	while(clear==true){
+
+		offset = new ClipperLib.Paths()
+
+			co.Execute(offset, -(scale*toolOffset)*i)
+
+		if(offset.length==0){
+			clear=false
+		}
+
+
+		i++
+		for(j=0;j<offset.length;j++){
+			oset.push(offset[j])
+		}
+		if(i==2){
+			if(passB.length<=offset.length){
+				finishPass=false
+			}
+
+			if(passB.length==offset.length){
+				for(k=0;k<passB.length;k++){
+					if((passB[k].length>(offset[k].length+10))||(passB[k].length<(offset[k].length-10))){
+						finishPass=true
+					}
+				}
+			}
+
+		}
+	}
+
+
+}
 
 
 
@@ -378,6 +562,70 @@ function makeGrid(){
 
 		for(i=0;i<rows+(parseInt(document.getElementById("y-top").value*gridScale))+(parseInt(document.getElementById("y-bot").value*gridScale));i++){
 			x=2.54-(parseInt(document.getElementById("x-left").value*gridScale)*space)
+
+			
+
+			for(j=0;j<columns+(parseInt(document.getElementById("x-right").value*gridScale))+(parseInt(document.getElementById("x-left").value*gridScale));j++){
+
+				//pins
+				if((j>=8+(parseInt(document.getElementById("x-left").value*gridScale)))&&(i<3+(parseInt(document.getElementById("y-bot").value*gridScale)))&&(i>=(parseInt(document.getElementById("y-bot").value*gridScale))) ){
+					if((j%2==0)&&(j<24+(parseInt(document.getElementById("x-left").value*gridScale)))){
+						pinNum++
+					}
+					else if((j%2==0)&&(j>24+(parseInt(document.getElementById("x-left").value*gridScale)))&&(j<37+(parseInt(document.getElementById("x-left").value*gridScale)))){
+						pinNum++
+					}
+					else if(j>=37+(parseInt(document.getElementById("x-left").value*gridScale))){
+						pinNum=0
+					}
+				}
+				else if((j>=0+(parseInt(document.getElementById("x-left").value*gridScale)))&&(i<39+(parseInt(document.getElementById("y-bot").value*gridScale)))&&(i>=(parseInt(document.getElementById("y-bot").value*gridScale+36))) ){
+					if(j==0+(parseInt(document.getElementById("x-left").value*gridScale)) ){
+						pinNum=15
+					}
+					else if(j==22+(parseInt(document.getElementById("x-left").value*gridScale))){
+						pinNum=25
+					}
+					else if((j%2==0)&&(j>(parseInt(document.getElementById("x-left").value*gridScale))) ){
+						pinNum++
+					}
+				}
+				else{
+					pinNum=0
+				}
+				//
+				
+				pts.push({X:-19.685+o+x,Y:21.61+y,PIN:pinNum})
+				x+=space
+			}
+			y-=space
+
+			//if(j==3){
+			//	grid[grid.length-1].push({X:-19.685+o+x,Y:21.61+y})
+			//}
+
+		}		
+		
+	}
+
+	
+
+	if((document.getElementById("grid").value)=="1mm"){
+		var space = 1
+		var rows = 49
+		var columns = 47
+		var gridScale = 2.54
+		pinNum=0
+
+		y=2.54+(parseInt(document.getElementById("y-bot").value*gridScale)*space)
+
+		
+
+		for(i=0;i<rows+(parseInt(document.getElementById("y-top").value*gridScale))+(parseInt(document.getElementById("y-bot").value*gridScale));i++){
+			x=2.54-(parseInt(document.getElementById("x-left").value*gridScale)*space)
+
+			//grid.push([{X:-19.685+o+x,Y:21.61+y}])
+
 			for(j=0;j<columns+(parseInt(document.getElementById("x-right").value*gridScale))+(parseInt(document.getElementById("x-left").value*gridScale));j++){
 
 				//pins
@@ -408,15 +656,33 @@ function makeGrid(){
 				}
 				//
 
+				if(j==0){
+					grid.push([{X:-19.685+o+x,Y:21.61+y}])
+					//grid.push([{X:-19.685+o+x,Y:21.61+y}])
+				}
+
 				pts.push({X:-19.685+o+x,Y:21.61+y,PIN:pinNum})
 				x+=space
 			}
+
+			
+			grid[i].push({X:(-19.685+o+x)-1,Y:(21.61+y)})
+
 			y-=space
+		}
+
+		//columns=j
+
+		console.log(j)
+		//console.log(columns)
+
+		for(i=0;i<j;i++){
+			grid.push([{X:grid[0][0].X+i,Y:grid[0][0].Y},{X:grid[0][0].X+i,Y:(21.61+y)+1}])
 		}		
 		
 	}
 
-
+	//console.log(grid)
 
 	if((document.getElementById("grid").value)=="0.05"){
 		var space = 1.27
@@ -523,17 +789,38 @@ function makeGrid(){
 		y = y-space
 		}
 	}
-	y = 3.79
-		for(i=0;i<rows+(parseInt(document.getElementById("y-top").value)*gridScale)+(parseInt(document.getElementById("y-bot").value)*gridScale);i++){
-			grid.push([{X:-19.685+2.54-(parseInt(document.getElementById("x-left").value)*2.54)+o,Y:25.4+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)-y},{X:29.845-2.54+o+1.27+(parseFloat(document.getElementById("x-right").value)*2.54),Y:25.4+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)-y}])
-			y = y + space
+
+
+		if((document.getElementById("grid").value)!="1mm"){
+			y = 3.79
+			for(i=0;i<rows+(parseInt(document.getElementById("y-top").value)*gridScale)+(parseInt(document.getElementById("y-bot").value)*gridScale);i++){
+				grid.push([{X:-19.685+2.54-(parseInt(document.getElementById("x-left").value)*2.54)+o,Y:25.4+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)-y},{X:29.845-2.54+o+1.27+(parseFloat(document.getElementById("x-right").value)*2.54),Y:25.4+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)-y}])
+				y = y + space
+			}
+			x = 0
+			for(i=0;i<columns+(parseInt(document.getElementById("x-right").value*gridScale))+(parseInt(document.getElementById("x-left").value)*gridScale);i++){
+				grid.push([{X:-19.685+2.54-(parseInt(document.getElementById("x-left").value)*2.54)+o+x,Y:21.61+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)},{X:-19.685+2.54-(parseInt(document.getElementById("x-left").value)*2.54)+o+x,Y:-21.61-2.54-(parseInt(document.getElementById("y-top").value)*2.54)}])
+				x = x + space
+			}	
+
 		}
-		x = 0
-		for(i=0;i<columns+(parseInt(document.getElementById("x-right").value*gridScale))+(parseInt(document.getElementById("x-left").value)*gridScale);i++){
-			grid.push([{X:-19.685+2.54-(parseInt(document.getElementById("x-left").value)*2.54)+o+x,Y:21.61+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)},{X:-19.685+2.54-(parseInt(document.getElementById("x-left").value)*2.54)+o+x,Y:-21.61-2.54-(parseInt(document.getElementById("y-top").value)*2.54)}])
-			x = x + space
-		}	
+		else if((document.getElementById("grid").value)=="1mm"){
+			y = 3.79
+			for(i=0;i<(rows+(parseInt(document.getElementById("y-top").value)*gridScale)+(parseInt(document.getElementById("y-bot").value)*gridScale));i++){
+				//grid.push([{X:(-19.685+2.54-(parseInt(document.getElementById("x-left").value)*2.54)+o),Y:25.4+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)-y},{X:(29.845-2.54+o+1.27+(parseFloat(document.getElementById("x-right").value)*2.54)),Y:25.4+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)-y}])
+				y = y + space
+			}
+			x = 0
+			for(i=0;i<(columns+(parseInt(document.getElementById("x-right").value*gridScale))+(parseInt(document.getElementById("x-left").value)*gridScale));i++){
+				//grid.push([{X:-19.685+2.54-(parseInt(document.getElementById("x-left").value)*2.54)+o+x,Y:21.61+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)},{X:-19.685+2.54-(parseInt(document.getElementById("x-left").value)*2.54)+o+x,Y:parseInt(-21.61-2.54-(parseInt(document.getElementById("y-top").value)*2.54))}])
+				x = x + space
+			}	
+
+		}
+
 	}
+
+
 	else if(document.getElementById("board").value=="blank"){
 
 
@@ -585,6 +872,36 @@ function makeGrid(){
 				grid.push([{X:(xmin+(i*0.635)),Y:(ymax-0.635)},{X:(xmin+(i*0.635)),Y:(ymin+0.635)}])
 			}	
 		}
+
+		else if((document.getElementById("grid").value)=="1mm"){
+
+			xend=( (Math.round(Math.abs(xmin))) + (Math.round(xmax)) )
+			yend=( (Math.round(Math.abs(ymin))) + (Math.round(ymax)) )
+
+			for(i=0;i<(yend)-1;i++){
+				for(j=0;j<(xend)-1;j++){
+					pts.push({X:(Math.round(xmin)+1+(j)),Y:(Math.round(ymax)-1-(i))})
+				}
+			}
+
+			//console.log(xmax)
+
+
+
+			//console.log(xend)
+
+			for(i=1;i<yend;i++){
+				grid.push([{X:Math.round(xmin)+1,Y:(Math.round(ymax)-(i))},{X:Math.round(xmax)-1,Y:(Math.round(ymax)-(i))}])
+			}
+			//console.log(xmax-1)
+
+
+			for(i=1;i<xend;i++){
+				grid.push([{X:(Math.round(xmin)+(i)),Y:(Math.round(ymax)-1)},{X:(Math.round(xmin)+(i)),Y:(Math.round(ymin+1))}])
+			}	
+		}
+
+		//console.log(grid)
 
 	}
 

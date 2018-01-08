@@ -19,13 +19,39 @@ input{
 #finish{
 	position: absolute;
 	right: 0px;
+	top: 280px;
+}
+
+#tp{
+	position: absolute;
+	right: 0px;
+	top: 240px;
+}
+
+#ma{
+	position: absolute;
+	right: 0px;
 	top: 200px;
 }
+
+#millAll{
+	position: absolute;
+	right: 55px;
+	top: 205px;
+}
+
+
+#toolPath{
+	position: absolute;
+	right: 55px;
+	top: 245px;
+}
+
 
 #finishPass{
 	position: absolute;
 	right: 55px;
-	top: 205px;
+	top: 285px;
 }
 
 #input_submit{
@@ -231,7 +257,7 @@ depth{
 	left: 8px;
 	top: 62px;
 	width: 190px;
-	height: 450px;
+	height: 475px;
 	background: rgba(76, 175, 80, 0.5);
 	padding: 20px;
 	border-radius: 25px;

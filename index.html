@@ -4,7 +4,7 @@
 
 <html lang="en"> 
 <head>
-	<title>SHIELD</title>
+	<title>SHIELD MILL</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
 	<link href="css/style.css" rel="stylesheet">
 	<script src="js/libs/jquery-1.11.2.min.js"></script>
@@ -20,14 +20,26 @@
 <select class="input" id="type" autocomplete="on">
   <option value="part" selected disabled>&#43; parts</option>
   <option value="hole">hole (0.1"&#8960;)</option>
-  <option value="dip">pad (DIP)</option>
+  <option value="dip">pad (DIP 0.06"&#8960;)</option>
+
+  <option value="Rpad1">pad (0.01"&#8960;)</option>
+  <option value="Rpad3">pad (0.03"&#8960;)</option>
+  <option value="Rpad5">pad (0.05"&#8960;)</option>
+
   <option value="smd" data-part="0.03">pad (SMD 0.03")</option>
   <option value="smd" data-part="0.06">pad (SMD 0.06")</option>
+
+  <option value="pad0310">pad (SMD 0.03x0.1")</option>
+  <option value="pad1003">pad (SMD 0.1x0.03")</option>
+  <option value="pad0106">pad (SMD 0.01x0.05")</option>
+  <option value="pad0601">pad (SMD 0.05x0.01")</option>
+
   <option value="routeD">trace (0.005")</option>
   <option value="routeC">trace (0.010")</option>
   <option value="routeB">trace (0.012")</option>
   <option value="route">trace (0.024")</option>
   <option value="resistor">SMD (1206)</option>
+  <option value="via">via (0.05"&#8960;)</option>
 </select>
 
 <select class="input" id="board" autocomplete="on">
@@ -41,9 +53,10 @@
 </select>
 
 <select  class="input" id="grid" autocomplete="on">
-  <option value="0.025">grid: 0.025"</option>
-  <option value="0.05">grid: 0.05"</option>
   <option value="0.1" selected>grid: 0.1"</option>
+  <option value="0.05">grid: 0.05"</option>
+  <option value="0.025">grid: 0.025"</option>
+  <option value="1mm">grid: 1mm</option>
 </select>
 
 <select id="project" autocomplete="on">
@@ -52,11 +65,17 @@
 </select>
 
 
-<div id="finishPass">1/64 pass</div>
+<div id="millAll">clear all</div>
+<input type="checkbox" id="ma" value="ma">
+
+<div id="finishPass">1/64" toolPath</div>
 <input type="checkbox" id="finish" value="finish">
 
+<div id="toolPath">1/32" toolPath</div>
+<input type="checkbox" id="tp" value="tp">
+
 <t id="origin">
-origin offset
+origin offset (inch)
 </t>
 
 
@@ -78,10 +97,13 @@ y:
 <input id="undo" type="submit" value="UNDO" onclick="undo()"/>
 <input id="select" type="submit" value="delete" onclick="ripup()"/>
 
-<select  class="input" id="file" autocomplete="off">
-  <option value="gcode">G-code inch (.tap)</option>
-  <option value="rml" selected>Modela (.rml)</option>
-  <option value="sbp">ShopBot (.sbp)</option>
+<select  class="input" id="file" autocomplete="on">
+  <option value="gcode">G-code inch (tap)</option>
+  <option value="gcode_mm">G-code mm (tap)</option>
+  <option value="rml01">Roland MDX 40/540 (rml)</option>
+  <option value="rml025" selected>Roland MDX/SRM 15/20 (rml)</option>
+  <option value="sbp">ShopBot inch (sbp)</option>
+  <option value="hpgl">Vinyl Cutter (hpgl)</option>
 </select>
 
 <button id="input_submit" onclick="make()">MAKE</button>
@@ -134,6 +156,7 @@ y:
 	<br>remove Y-
 	<br>remove X-
 	<br>remove X+
+	<br>rotate part
 </p>
 <p class="alignright">
 	c
@@ -150,6 +173,7 @@ y:
 	<br>shift + up
 	<br>shift + right
 	<br>shift + left
+	<br>r
 </p>
 
 <center><a href="https://www.github.com/jw4rd/shield">gitHub</a></center>
@@ -200,6 +224,8 @@ var xpos = 0
 var hole = []
 var partNum = 0
 var traceNum = []
+var padRect
+var millAll = false
 
 var o = -5.7135  //x display offset 
 var c
@@ -208,6 +234,9 @@ var sf = 1
 var r = 1
 
 var myConfig = {}
+
+var vcut = []
+var vpins = []
 
 var arduino = []
 var arduino_pins = []
@@ -379,8 +408,22 @@ $("#myCanvas").on('click', function(e) {
 			var drill = false
 			var skip = false
 
-			if(document.getElementById("type").value=="dip"){
+			if((document.getElementById("type").value=="dip")||(document.getElementById("type").value=="via")){
 				drill = true
+				if(document.getElementById("type").value=="via"){
+					r=0.55
+				}
+			}
+			else if(document.getElementById("type").value.substring(1,4)=="pad"){
+				if(document.getElementById("type").value=="Rpad1"){
+					r=0.117
+				}	
+				else if(document.getElementById("type").value=="Rpad3"){
+					r=0.425
+				}	
+				else if(document.getElementById("type").value=="Rpad5"){
+					r=0.585
+				}
 			}
 			else if(document.getElementById("type").value=="route"){
 				r = 0.32
@@ -406,6 +449,7 @@ $("#myCanvas").on('click', function(e) {
 				r=0.425
 			}
 
+
 			if((document.getElementById("grid").value)=="0.05"){
 				//finishPass=true
 				var space = 0.635
@@ -413,6 +457,10 @@ $("#myCanvas").on('click', function(e) {
 			else if((document.getElementById("grid").value)=="0.025"){
 				//finishPass=true
 				var space = 0.3175
+			}
+			else if((document.getElementById("grid").value)=="1mm"){
+				//finishPass=true
+				var space = 0.5
 			}
 			else{
 				var space = 1.27
@@ -497,7 +545,7 @@ $("#myCanvas").on('click', function(e) {
 
 						trace.push([])
 						
-						if(document.getElementById("type").value=="dip"){
+						if((document.getElementById("type").value=="dip")||(document.getElementById("type").value=="via")||(document.getElementById("type").value.substring(1,4)=="pad")){
 							for(j=0;j<=v;j++){
 								trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*r),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*r)})
 							}
@@ -520,6 +568,17 @@ $("#myCanvas").on('click', function(e) {
 							trace[trace.length-1].push({X:pts[i].X+r,Y:pts[i].Y-r})
 							trace[trace.length-1].push({X:pts[i].X-r,Y:pts[i].Y-r})
 						}
+						else if(document.getElementById("type").value.substring(0,3)=="pad"){
+
+							trace[trace.length-1].push({X:pts[i].X-padRect.x,Y:pts[i].Y-padRect.y})
+							trace[trace.length-1].push({X:pts[i].X-padRect.x,Y:pts[i].Y+padRect.y})
+							trace[trace.length-1].push({X:pts[i].X+padRect.x,Y:pts[i].Y+padRect.y})
+							trace[trace.length-1].push({X:pts[i].X+padRect.x,Y:pts[i].Y-padRect.y})
+							trace[trace.length-1].push({X:pts[i].X-padRect.x,Y:pts[i].Y-padRect.y})
+
+						}
+
+
 						else if((pts[i].X==pts[i-1].X) && (pts[i].Y==pts[i-1].Y)){
 
 						}
@@ -577,7 +636,7 @@ $("#myCanvas").on('click', function(e) {
 					}
 
 					trace.push([])
-						if((document.getElementById("type").value=="dip")||(document.getElementById("type").value.substring(0,5)=="route")){
+						if((document.getElementById("type").value=="dip")||(document.getElementById("type").value.substring(0,5)=="route")||(document.getElementById("type").value=="via")||(document.getElementById("type").value.substring(1,4)=="pad")){
 							for(j=0;j<=v;j++){
 								trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*r),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*r)})
 							}
@@ -595,6 +654,15 @@ $("#myCanvas").on('click', function(e) {
 							trace[trace.length-1].push({X:pts[i].X+r,Y:pts[i].Y+r})
 							trace[trace.length-1].push({X:pts[i].X+r,Y:pts[i].Y-r})
 							trace[trace.length-1].push({X:pts[i].X-r,Y:pts[i].Y-r})		
+
+						}
+						else if(document.getElementById("type").value.substring(0,3)=="pad"){
+
+							trace[trace.length-1].push({X:pts[i].X-padRect.x,Y:pts[i].Y-padRect.y})
+							trace[trace.length-1].push({X:pts[i].X-padRect.x,Y:pts[i].Y+padRect.y})
+							trace[trace.length-1].push({X:pts[i].X+padRect.x,Y:pts[i].Y+padRect.y})
+							trace[trace.length-1].push({X:pts[i].X+padRect.x,Y:pts[i].Y-padRect.y})
+							trace[trace.length-1].push({X:pts[i].X-padRect.x,Y:pts[i].Y-padRect.y})
 
 						}					
 
@@ -708,6 +776,9 @@ $("#myCanvas").on('mousemove', function(e) {
 	else if((document.getElementById("grid").value)=="0.025"){
 		var space = 0.3175
 	}
+	else if((document.getElementById("grid").value)=="1mm"){
+		var space = 0.5
+	}
 	else{
 		var space=1.27
 	}
@@ -758,6 +829,32 @@ $(document).keypress(function(e){
 $(document).keydown(function(e){
 
 	//console.log($("#x-origin").is(':focus'))
+
+
+	//console.log(e.which)
+
+	if(e.which == 82){
+
+		//console.log(document.getElementById("type").value)
+
+		if(document.getElementById("type").value=="pad0310"){
+			document.getElementById("type").value="pad1003"
+		}
+		else if(document.getElementById("type").value=="pad1003"){
+			document.getElementById("type").value="pad0310"
+		}
+		else if(document.getElementById("type").value=="pad0106"){
+			document.getElementById("type").value="pad0601"
+		}
+		else if(document.getElementById("type").value=="pad0601"){
+			document.getElementById("type").value="pad0106"
+		}
+
+		//console.log(document.getElementById("type").value)
+
+	}
+
+
 
 	if(($("#x-origin").is(':focus')==false) && ($("#y-origin").is(':focus')==false) && ($(".input").is(':focus')==false)){
 
@@ -836,6 +933,7 @@ $(document).keydown(function(e){
 		partNum = 0
 		traceNum = []
 		passA = []
+		passB = []
 
 		finishPass=false
 
@@ -954,6 +1052,42 @@ $("#finish").on("change", function(){
 
 })
 
+
+$("#tp").on("change", function(){
+
+	//if(document.getElementById("finish").checked==true){
+	//	finishPass=true
+	//}
+	//else{
+	//	finishPass=false
+	//}
+	//add_trace()
+	draw()
+
+})
+
+
+	if(document.getElementById("ma").checked==true){
+		millAll=true
+	}
+	else{
+		millAll=false
+	}
+
+$("#ma").on("change", function(){
+
+	if(document.getElementById("ma").checked==true){
+		millAll=true
+	}
+	else{
+		millAll=false
+	}
+	add_trace()
+	draw()
+
+})
+
+
 $("#part-list").on("change", function(){
 	draw()
 })
@@ -1044,6 +1178,30 @@ $("#y-top").on("change", function(){
 	add_trace()
 
 })
+
+
+if(document.getElementById("file").value=="hpgl"){
+	$("#finishPass").css("display", "none")
+	$("#finish").css("display", "none")
+}
+
+
+$("#file").on("change", function(){
+
+
+	if(document.getElementById("file").value=="hpgl"){
+		$("#finishPass").css("display", "none")
+		$("#finish").css("display", "none")
+	}
+	else{
+		$("#finishPass").css("display", "block")
+		$("#finish").css("display", "block")
+	}
+
+	draw()
+
+})
+
 
 $("#y-bot").on("change", function(){
 
