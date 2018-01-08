@@ -744,7 +744,7 @@ function make(){
 		g+="PU;\n"
 		g+="!MC0;\n"
 		g+="V30;\n"	
-		g+="Z15240,10160,3000;\n"
+		//g+="Z15240,10160,3000;\n"
 
 		link = document.getElementById("downloadLink")
 
@@ -757,7 +757,7 @@ function make(){
 		g+="PU;\n"
 		g+="!MC0;\n"
 		g+="V30;\n"	
-		g+="Z6096,4046,1200;\n"
+		//g+="Z6096,4046,1200;\n"
 
 		link = document.getElementById("downloadLink")
 
@@ -889,7 +889,7 @@ function make(){
 			g2+="PU;\n"
 			g2+="!MC0;\n"
 			g2+="V30;\n"	
-			g2+="Z15240,10160,3000;\n"
+			//g2+="Z15240,10160,3000;\n"
 
 			link.setAttribute("href", "data:text/plain;base64," + btoa(g2))
 			link.setAttribute("download", filename + "64.rml")
@@ -922,7 +922,7 @@ function make(){
 			g+="PU;\n"
 			g+="!MC0;\n"
 			g+="V30;\n"	
-			g+="Z6096,4046,1200;\n"
+			//g+="Z6096,4046,1200;\n"
 
 			link.setAttribute("href", "data:text/plain;base64," + btoa(g2))
 			link.setAttribute("download", filename + "64.rml")
