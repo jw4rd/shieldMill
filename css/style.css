@@ -22,6 +22,20 @@ input{
 	top: 280px;
 }
 
+#finish2{
+	position: absolute;
+	right: 0px;
+	top: 320px;
+	display: none;
+}
+
+#finishPass2{
+	position: absolute;
+	right: 55px;
+	top: 325px;
+	display: none;
+}
+
 #tp{
 	position: absolute;
 	right: 0px;
@@ -53,6 +67,8 @@ input{
 	right: 55px;
 	top: 285px;
 }
+
+
 
 #input_submit{
 	position: absolute;

@@ -389,6 +389,8 @@ else{
 		offset = new ClipperLib.Paths()
 
 			co.Execute(offset, -(scale*toolOffset)*i)
+			
+			
 
 		if(offset.length==0){
 			clear=false
@@ -397,6 +399,7 @@ else{
 
 		i++
 		for(j=0;j<offset.length;j++){
+			offset[j].reverse()
 			oset.push(offset[j])
 		}
 		if(i==2){

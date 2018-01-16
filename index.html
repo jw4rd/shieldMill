@@ -74,6 +74,9 @@
 <div id="toolPath">1/32" toolPath</div>
 <input type="checkbox" id="tp" value="tp">
 
+<div id="finishPass2">1/100" toolPath</div>
+<input type="checkbox" id="finish2" value="finish">
+
 <t id="origin">
 origin offset (inch)
 </t>
@@ -101,7 +104,8 @@ y:
   <option value="gcode">G-code inch (tap)</option>
   <option value="gcode_mm">G-code mm (tap)</option>
   <option value="rml01">Roland MDX 40/540 (rml)</option>
-  <option value="rml025" selected>Roland MDX/SRM 15/20 (rml)</option>
+  <option value="rml01" selected>Roland SRM 20 (rml)</option>
+  <option value="rml025">Roland MDX 15/20 (rml)</option>
   <option value="sbp">ShopBot inch (sbp)</option>
   <option value="hpgl">Vinyl Cutter (hpgl)</option>
 </select>
@@ -193,6 +197,8 @@ y:
 
 //TODO
 
+//reverse clear all path
+//
 //delete part/trace, actions[], undo delete
 //
 //variable hole size
