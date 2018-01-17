@@ -968,14 +968,14 @@ function make(){
 			g2+="m3\n"
 			g2+="g4p3\n"
 	
-			for(i=0;i<passB.length;i++){
-				g2+="g0x"+(((passB[i][0].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed)+"y"+ ((((passB[i][0].Y/scale)+ymax)/sfx)+y0).toFixed(fixed) + "\n"
+			for(i=0;i<passC.length;i++){
+				g2+="g0x"+(((passC[i][0].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed)+"y"+ ((((passC[i][0].Y/scale)+ymax)/sfx)+y0).toFixed(fixed) + "\n"
 	   		g2+="g1z-"+ millDepth + "f" + (plunge/2).toFixed((fixed/2)) + "\n"
 				g2+="g4p0.1\n"
-					for(j=1;j<passB[i].length;j++){
-						g2+="g1x"+(((passB[i][j].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed) + "y" + ((((passB[i][j].Y/scale)+ymax)/sfx)+y0).toFixed(fixed) + "f" + (feed/2).toFixed((fixed/2)) + "\n"		
+					for(j=1;j<passC[i].length;j++){
+						g2+="g1x"+(((passC[i][j].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed) + "y" + ((((passC[i][j].Y/scale)+ymax)/sfx)+y0).toFixed(fixed) + "f" + (feed/2).toFixed((fixed/2)) + "\n"		
 					}
-				g2+="g1x"+(((passB[i][0].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed)+"y"+ ((((passB[i][0].Y/scale)+ymax)/sfx)+y0).toFixed(4) + "f" + (feed/2).toFixed((fixed/2)) + "\n"
+				g2+="g1x"+(((passC[i][0].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed)+"y"+ ((((passC[i][0].Y/scale)+ymax)/sfx)+y0).toFixed(4) + "f" + (feed/2).toFixed((fixed/2)) + "\n"
 				g2+="g0z"+ (retract/2).toFixed(fixed) +"\n"
 			}
 
@@ -983,7 +983,7 @@ function make(){
 			g2+="m5\n"
 
 			link.setAttribute("href", "data:text/plain;base64," + btoa(g2))
-			link.setAttribute("download", filename + "64.nc")
+			link.setAttribute("download", filename + "100.nc")
 			link.click()
 
 		}
@@ -994,14 +994,14 @@ function make(){
 			g2+="SO,1,1\n"
 			g2+="PAUSE 5\n"
 	
-			for(i=0;i<passB.length;i++){
-				g2+="J2,"+(((passB[i][0].X/scale/25.4)+Math.abs(xmin)/25.4)+x0).toFixed(4)+","+ ((((passB[i][0].Y/scale)+ymax)/25.4)+y0).toFixed(4) + "\n"
+			for(i=0;i<passC.length;i++){
+				g2+="J2,"+(((passC[i][0].X/scale/25.4)+Math.abs(xmin)/25.4)+x0).toFixed(4)+","+ ((((passC[i][0].Y/scale)+ymax)/25.4)+y0).toFixed(4) + "\n"
 	   		g2+="MZ,-" + millDepth + "\n"
 				g2+="PAUSE 0.1\n"
-					for(j=1;j<passB[i].length;j++){
-						g2+="M2,"+(((passB[i][j].X/scale/25.4)+Math.abs(xmin)/25.4)+x0).toFixed(4) + "," + ((((passB[i][j].Y/scale)+ymax)/25.4)+y0).toFixed(4) + "\n"		
+					for(j=1;j<passC[i].length;j++){
+						g2+="M2,"+(((passC[i][j].X/scale/25.4)+Math.abs(xmin)/25.4)+x0).toFixed(4) + "," + ((((passC[i][j].Y/scale)+ymax)/25.4)+y0).toFixed(4) + "\n"		
 					}
-				g2+="M2,"+(((passB[i][0].X/scale/25.4)+Math.abs(xmin)/25.4)+x0).toFixed(4) + "," + ((((passB[i][0].Y/scale)+ymax)/25.4)+y0).toFixed(4) + "\n"
+				g2+="M2,"+(((passC[i][0].X/scale/25.4)+Math.abs(xmin)/25.4)+x0).toFixed(4) + "," + ((((passC[i][0].Y/scale)+ymax)/25.4)+y0).toFixed(4) + "\n"
 				g2+="JZ,0.1\n"
 			}
 
@@ -1010,7 +1010,7 @@ function make(){
 			
 
 			link.setAttribute("href", "data:text/plain;base64," + btoa(g2))
-			link.setAttribute("download", filename + "64.sbp")
+			link.setAttribute("download", filename + "100.sbp")
 			link.click()
 
 		}
@@ -1068,16 +1068,16 @@ function make(){
 			g2 += "!DW10;\n"
 
 
-			for(i=0;i<passB.length;i++){
-				g2+="PU"+(((passB[i][0].X/scale*40)+Math.abs(xmin)*40)+rmlXYOffset+x0).toFixed(0)+","+ ((((passB[i][0].Y/scale)+ymax)*40)+rmlXYOffset+y0).toFixed(0) + "\n"
-					for(j=0;j<passB[i].length;j++){
+			for(i=0;i<passC.length;i++){
+				g2+="PU"+(((passC[i][0].X/scale*40)+Math.abs(xmin)*40)+rmlXYOffset+x0).toFixed(0)+","+ ((((passC[i][0].Y/scale)+ymax)*40)+rmlXYOffset+y0).toFixed(0) + "\n"
+					for(j=0;j<passC[i].length;j++){
 						if(j==0){
 							g2 += "!DW10;\n"
 						}
 						else{
 							g2 += "!DW;\n"
 						}
-						g2+="Z"+(((passB[i][j].X/scale*40)+Math.abs(xmin)*40)+rmlXYOffset+x0).toFixed(0) + "," + ((((passB[i][j].Y/scale)+ymax)*40)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
+						g2+="Z"+(((passC[i][j].X/scale*40)+Math.abs(xmin)*40)+rmlXYOffset+x0).toFixed(0) + "," + ((((passC[i][j].Y/scale)+ymax)*40)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
 					}
 
 			}
@@ -1088,7 +1088,7 @@ function make(){
 	
 
 			link.setAttribute("href", "data:text/plain;base64," + btoa(g2))
-			link.setAttribute("download", filename + "64.rml")
+			link.setAttribute("download", filename + "100.rml")
 			link.click()
 
 		}

@@ -336,6 +336,7 @@ function add_trace(){
 
 		if(millAll==true){
 			co.Execute(offset, -(scale*0.2))
+			offset.splice(0,1)
 		}
 		else{
 			co.Execute(offset, (scale*0.2))
@@ -356,13 +357,14 @@ function add_trace(){
 
 		if(millAll==true){
 			co.Execute(offset, -(scale*0.127))
+			offset.splice(0,1)
 		}
 		else{
 			co.Execute(offset, (scale*0.127))
 		}
 
 		passC=offset
-		//passC.splice(0,1)
+		//
 
 	}
 
@@ -583,6 +585,62 @@ function makeGrid(){
 		var rows = 77
 		var columns = 73
 		var gridScale = 4
+		pinNum=0
+
+		y=2.54+(parseInt(document.getElementById("y-bot").value*gridScale)*space)
+
+		for(i=0;i<rows+(parseInt(document.getElementById("y-top").value*gridScale))+(parseInt(document.getElementById("y-bot").value*gridScale));i++){
+			x=2.54-(parseInt(document.getElementById("x-left").value*gridScale)*space)
+
+			
+
+			for(j=0;j<columns+(parseInt(document.getElementById("x-right").value*gridScale))+(parseInt(document.getElementById("x-left").value*gridScale));j++){
+
+				//pins
+				if((j>=8+(parseInt(document.getElementById("x-left").value*gridScale)))&&(i<3+(parseInt(document.getElementById("y-bot").value*gridScale)))&&(i>=(parseInt(document.getElementById("y-bot").value*gridScale))) ){
+					if((j%2==0)&&(j<24+(parseInt(document.getElementById("x-left").value*gridScale)))){
+						pinNum++
+					}
+					else if((j%2==0)&&(j>24+(parseInt(document.getElementById("x-left").value*gridScale)))&&(j<37+(parseInt(document.getElementById("x-left").value*gridScale)))){
+						pinNum++
+					}
+					else if(j>=37+(parseInt(document.getElementById("x-left").value*gridScale))){
+						pinNum=0
+					}
+				}
+				else if((j>=0+(parseInt(document.getElementById("x-left").value*gridScale)))&&(i<39+(parseInt(document.getElementById("y-bot").value*gridScale)))&&(i>=(parseInt(document.getElementById("y-bot").value*gridScale+36))) ){
+					if(j==0+(parseInt(document.getElementById("x-left").value*gridScale)) ){
+						pinNum=15
+					}
+					else if(j==22+(parseInt(document.getElementById("x-left").value*gridScale))){
+						pinNum=25
+					}
+					else if((j%2==0)&&(j>(parseInt(document.getElementById("x-left").value*gridScale))) ){
+						pinNum++
+					}
+				}
+				else{
+					pinNum=0
+				}
+				//
+				
+				pts.push({X:-19.685+o+x,Y:21.61+y,PIN:pinNum})
+				x+=space
+			}
+			y-=space
+
+			//if(j==3){
+			//	grid[grid.length-1].push({X:-19.685+o+x,Y:21.61+y})
+			//}
+
+		}		
+		
+	}
+	else if((document.getElementById("grid").value)=="0.01"){
+		var space = 0.254
+		var rows = 190
+		var columns = 181
+		var gridScale = 10
 		pinNum=0
 
 		y=2.54+(parseInt(document.getElementById("y-bot").value*gridScale)*space)
