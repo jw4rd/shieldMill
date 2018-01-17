@@ -122,6 +122,9 @@ if((seg==1)&&(line==true)&&(pan==false)&&(document.getElementById("type").value.
 	else if(document.getElementById("type").value=="routeD"){
 		ctx.lineWidth=0.1*sf
 	}
+	else if(document.getElementById("type").value=="routeE"){
+		ctx.lineWidth=0.06*sf
+	}
 	else{
 		ctx.lineWidth=0.6*sf
 	}
@@ -395,6 +398,9 @@ if((on_grid==true)&&(pan==false)){
 		if(padType=="0.03"){
 			padSize = 0.425
 		}
+		else if(padType=="0.01"){
+			padSize = 0.142
+		}
 		ctx.moveTo((ctx.canvas.width/2)+((mouseX-padSize)*sf),(ctx.canvas.height/2)+((mouseY-padSize)*sf))
 		ctx.lineTo((ctx.canvas.width/2)+((mouseX-padSize)*sf),(ctx.canvas.height/2)+((mouseY+padSize)*sf))
 		ctx.lineTo((ctx.canvas.width/2)+((mouseX+padSize)*sf),(ctx.canvas.height/2)+((mouseY+padSize)*sf))
@@ -489,16 +495,29 @@ else{
 	}
 
 	if(finishPass==true){
-	ctx.strokeStyle="#0000ff"
-	for(i=0;i<passB.length;i++){
-		ctx.beginPath()
-		ctx.moveTo(((ctx.canvas.width/2)+(passB[i][0].X/scale*sf)).toFixed(3),((ctx.canvas.height/2)+(passB[i][0].Y/scale*sf)).toFixed(3))
-		for(j=0;j<passB[i].length;j++){
-			ctx.lineTo(((ctx.canvas.width/2)+(passB[i][j].X/scale*sf)).toFixed(3),((ctx.canvas.height/2)+(passB[i][j].Y/scale*sf)).toFixed(3))
+		ctx.strokeStyle="#0000ff"
+		for(i=0;i<passB.length;i++){
+			ctx.beginPath()
+			ctx.moveTo(((ctx.canvas.width/2)+(passB[i][0].X/scale*sf)).toFixed(3),((ctx.canvas.height/2)+(passB[i][0].Y/scale*sf)).toFixed(3))
+			for(j=0;j<passB[i].length;j++){
+				ctx.lineTo(((ctx.canvas.width/2)+(passB[i][j].X/scale*sf)).toFixed(3),((ctx.canvas.height/2)+(passB[i][j].Y/scale*sf)).toFixed(3))
+			}
+			ctx.lineTo(((ctx.canvas.width/2)+(passB[i][0].X/scale*sf)).toFixed(3),((ctx.canvas.height/2)+(passB[i][0].Y/scale*sf)).toFixed(3))		
+			ctx.stroke()
 		}
-		ctx.lineTo(((ctx.canvas.width/2)+(passB[i][0].X/scale*sf)).toFixed(3),((ctx.canvas.height/2)+(passB[i][0].Y/scale*sf)).toFixed(3))		
-		ctx.stroke()
 	}
+
+	if(finishPass2==true){
+		ctx.strokeStyle="#ff0000"
+		for(i=0;i<passC.length;i++){
+			ctx.beginPath()
+			ctx.moveTo(((ctx.canvas.width/2)+(passC[i][0].X/scale*sf)).toFixed(3),((ctx.canvas.height/2)+(passC[i][0].Y/scale*sf)).toFixed(3))
+			for(j=0;j<passC[i].length;j++){
+				ctx.lineTo(((ctx.canvas.width/2)+(passC[i][j].X/scale*sf)).toFixed(3),((ctx.canvas.height/2)+(passC[i][j].Y/scale*sf)).toFixed(3))
+			}
+			ctx.lineTo(((ctx.canvas.width/2)+(passC[i][0].X/scale*sf)).toFixed(3),((ctx.canvas.height/2)+(passC[i][0].Y/scale*sf)).toFixed(3))		
+			ctx.stroke()
+		}
 	}
 
 }

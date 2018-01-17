@@ -26,6 +26,7 @@
   <option value="Rpad3">pad (0.03"&#8960;)</option>
   <option value="Rpad5">pad (0.05"&#8960;)</option>
 
+  <option value="smd" data-part="0.01">pad (SMD 0.01")</option>
   <option value="smd" data-part="0.03">pad (SMD 0.03")</option>
   <option value="smd" data-part="0.06">pad (SMD 0.06")</option>
 
@@ -34,10 +35,12 @@
   <option value="pad0106">pad (SMD 0.01x0.05")</option>
   <option value="pad0601">pad (SMD 0.05x0.01")</option>
 
+  <option value="routeE">trace (0.003")</option>
   <option value="routeD">trace (0.005")</option>
   <option value="routeC">trace (0.010")</option>
   <option value="routeB">trace (0.012")</option>
   <option value="route">trace (0.024")</option>
+
   <option value="resistor">SMD (1206)</option>
   <option value="via">via (0.05"&#8960;)</option>
 </select>
@@ -56,6 +59,7 @@
   <option value="0.1" selected>grid: 0.1"</option>
   <option value="0.05">grid: 0.05"</option>
   <option value="0.025">grid: 0.025"</option>
+  <option value="0.01">grid: 0.01"</option>
   <option value="1mm">grid: 1mm</option>
 </select>
 
@@ -288,6 +292,7 @@ var temp = []
 var temp2
 var padType
 var finishPass = false
+var finishPass2 = false
 var select = false
 var partSelected
 
@@ -446,6 +451,10 @@ $("#myCanvas").on('click', function(e) {
 				r = 0.07
 				d = 0.06
 			}
+			else if(document.getElementById("type").value=="routeE"){
+				r = 0.03
+				d = 0.02
+			}
 			else if(document.getElementById("type").value=="hole"){
 				r = 1.27
 				drill="hole"
@@ -454,22 +463,30 @@ $("#myCanvas").on('click', function(e) {
 				//finishPass=true
 				r=0.425
 			}
+			else if(padType=="0.01"){
+				//finishPass=true
+				r=0.142
+			}
 
 
 			if((document.getElementById("grid").value)=="0.05"){
 				//finishPass=true
-				var space = 0.635
+				space = 0.635
 			}
 			else if((document.getElementById("grid").value)=="0.025"){
 				//finishPass=true
-				var space = 0.3175
+				space = 0.3175
+			}
+			else if((document.getElementById("grid").value)=="0.01"){
+				//finishPass=true
+				space = 0.127
 			}
 			else if((document.getElementById("grid").value)=="1mm"){
 				//finishPass=true
-				var space = 0.5
+				space = 0.5
 			}
 			else{
-				var space = 1.27
+				space = 1.27
 			}
 
 
@@ -777,16 +794,19 @@ $("#myCanvas").on('mousemove', function(e) {
 	mouseY=((e.clientY-(10)-(yo)-(ctx.canvas.height/2))/sf)-panY
 
 	if((document.getElementById("grid").value)=="0.05"){
-		var space = 0.635
+		space = 0.635
 	}
 	else if((document.getElementById("grid").value)=="0.025"){
-		var space = 0.3175
+		space = 0.3175
+	}
+	else if((document.getElementById("grid").value)=="0.01"){
+		space = 0.127
 	}
 	else if((document.getElementById("grid").value)=="1mm"){
-		var space = 0.5
+		space = 0.5
 	}
 	else{
-		var space=1.27
+		space=1.27
 	}
 	
 	if(pan==false){
@@ -940,8 +960,11 @@ $(document).keydown(function(e){
 		traceNum = []
 		passA = []
 		passB = []
+		passC = []
 
 		finishPass=false
+
+		finishPass2=false
 
 		document.getElementById("y-top").value=0
 		document.getElementById("y-bot").value=0
@@ -1059,15 +1082,29 @@ $("#finish").on("change", function(){
 })
 
 
+	if(document.getElementById("finish2").checked==true){
+		finishPass2=true
+	}
+	else{
+		finishPass2=false
+	}
+
+$("#finish2").on("change", function(){
+
+	if(document.getElementById("finish2").checked==true){
+		finishPass2=true
+	}
+	else{
+		finishPass2=false
+	}
+	add_trace()
+
+})
+
+
 $("#tp").on("change", function(){
 
-	//if(document.getElementById("finish").checked==true){
-	//	finishPass=true
-	//}
-	//else{
-	//	finishPass=false
-	//}
-	//add_trace()
+
 	draw()
 
 })

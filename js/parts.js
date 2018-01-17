@@ -1,4 +1,5 @@
 var passB = []
+var passC = []
 var myBoard = new Object()
 
 vcut = []
@@ -326,7 +327,7 @@ function add_trace(){
 
 	var oset = []
 
-	//console.log(finishPass)
+	
 	
 	//
 	if(finishPass==true){
@@ -340,12 +341,31 @@ function add_trace(){
 			co.Execute(offset, (scale*0.2))
 		}
 
-		for(i=0;i<offset.length;i++){
-			//offset[i].reverse()
-		}
 		passB=offset
 	}
 	//
+
+	//console.log(finishPass2)
+	//finishPass2=true
+
+	if(finishPass2==true){
+
+		passC = []
+		offset = new ClipperLib.Paths()
+
+		if(millAll==true){
+			co.Execute(offset, -(scale*0.127))
+		}
+		else{
+			co.Execute(offset, (scale*0.127))
+		}
+
+		passC=offset
+
+	}
+
+	//console.log(passC)
+
 
 	i=1
 	var toolOffset = 0.41
@@ -875,7 +895,22 @@ function makeGrid(){
 				grid.push([{X:(xmin+(i*0.635)),Y:(ymax-0.635)},{X:(xmin+(i*0.635)),Y:(ymin+0.635)}])
 			}	
 		}
+		else if((document.getElementById("grid").value)=="0.01"){
 
+			for(i=0;i<(Math.round(((Math.abs(ymin))+ymax)/0.254))-1;i++){
+				for(j=0;j<(Math.round(((Math.abs(xmin))+xmax)/0.254))-1;j++){
+					pts.push({X:(xmin+0.254+(j*0.254)),Y:(ymax-0.254-(i*0.254))})
+				}
+			}
+
+
+			for(i=1;i<(Math.round(((Math.abs(ymin))+ymax)/0.254));i++){
+				grid.push([{X:xmin+0.254,Y:(ymax-(i*0.254))},{X:xmax-0.254,Y:(ymax-(i*0.254))}])
+			}
+			for(i=1;i<(Math.round(((Math.abs(xmin))+xmax)/0.254));i++){
+				grid.push([{X:(xmin+(i*0.254)),Y:(ymax-0.254)},{X:(xmin+(i*0.254)),Y:(ymin+0.254)}])
+			}	
+		}
 		else if((document.getElementById("grid").value)=="1mm"){
 
 			xend=( (Math.round(Math.abs(xmin))) + (Math.round(xmax)) )

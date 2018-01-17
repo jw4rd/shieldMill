@@ -780,6 +780,7 @@ function make(){
 		link.setAttribute("href", "data:text/plain;base64," + btoa(g))
 		link.setAttribute("download", filename + "32.nc")
 		link.click()
+
 	}
 	else if(filetype=="hpgl"){
 
@@ -875,12 +876,17 @@ function make(){
 			g2 += "Z" + x0 + "," + y0 + "," + rmlOffset + ";\n"
 			g2 += "!DW3000;\n"
 			g2 += "Z" + x0 + "," + y0 + "," + rmlOffset + ";\n"
-			g2 += "!DW10;\n"
-
+			
 
 			for(i=0;i<passB.length;i++){
 				g2+="PU"+(((passB[i][0].X/scale*100)+Math.abs(xmin)*100)+rmlXYOffset+x0).toFixed(0)+","+ ((((passB[i][0].Y/scale)+ymax)*100)+rmlXYOffset+y0).toFixed(0) + "\n"
 					for(j=0;j<passB[i].length;j++){
+						if(j==0){
+							g2 += "!DW10;\n"
+						}
+						else{
+							g2 += "!DW;\n"
+						}
 						g2+="Z"+(((passB[i][j].X/scale*100)+Math.abs(xmin)*100)+rmlXYOffset+x0).toFixed(0) + "," + ((((passB[i][j].Y/scale)+ymax)*100)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
 					}
 
@@ -889,7 +895,7 @@ function make(){
 			g2+="PU;\n"
 			g2+="!MC0;\n"
 			g2+="V30;\n"	
-			//g2+="Z15240,10160,3000;\n"
+
 
 			link.setAttribute("href", "data:text/plain;base64," + btoa(g2))
 			link.setAttribute("download", filename + "64.rml")
@@ -914,6 +920,12 @@ function make(){
 			for(i=0;i<passB.length;i++){
 				g2+="PU"+(((passB[i][0].X/scale*40)+Math.abs(xmin)*40)+rmlXYOffset+x0).toFixed(0)+","+ ((((passB[i][0].Y/scale)+ymax)*40)+rmlXYOffset+y0).toFixed(0) + "\n"
 					for(j=0;j<passB[i].length;j++){
+						if(j==0){
+							g2 += "!DW10;\n"
+						}
+						else{
+							g2 += "!DW;\n"
+						}
 						g2+="Z"+(((passB[i][j].X/scale*40)+Math.abs(xmin)*40)+rmlXYOffset+x0).toFixed(0) + "," + ((((passB[i][j].Y/scale)+ymax)*40)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
 					}
 
@@ -921,8 +933,8 @@ function make(){
 
 			g+="PU;\n"
 			g+="!MC0;\n"
-			g+="V30;\n"	
-			//g+="Z6096,4046,1200;\n"
+			g+="V30;\n"
+	
 
 			link.setAttribute("href", "data:text/plain;base64," + btoa(g2))
 			link.setAttribute("download", filename + "64.rml")
