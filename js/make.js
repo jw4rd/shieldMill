@@ -799,6 +799,9 @@ function make(){
 		ymax=Math.abs(ymin)
 	}
 
+
+	material = {feed:100,plunge:50}
+
 	
 	if(finishPass==true){
 		var g2 = ""
@@ -944,6 +947,157 @@ function make(){
 
 	}
 
+
+	material = {feed:75,plunge:25}
+
+
+	if(finishPass2==true){
+		var g2 = ""
+
+		if(filetype=="gcode"){
+
+			if((document.getElementById("file").value)=="gcode_mm"){
+				g2+="g21\n"
+			}
+			else{
+				g2+="g20\n"
+			}
+
+
+			g2+="g0z"+retract+"\n"
+			g2+="m3\n"
+			g2+="g4p3\n"
+	
+			for(i=0;i<passB.length;i++){
+				g2+="g0x"+(((passB[i][0].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed)+"y"+ ((((passB[i][0].Y/scale)+ymax)/sfx)+y0).toFixed(fixed) + "\n"
+	   		g2+="g1z-"+ millDepth + "f" + (plunge/2).toFixed((fixed/2)) + "\n"
+				g2+="g4p0.1\n"
+					for(j=1;j<passB[i].length;j++){
+						g2+="g1x"+(((passB[i][j].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed) + "y" + ((((passB[i][j].Y/scale)+ymax)/sfx)+y0).toFixed(fixed) + "f" + (feed/2).toFixed((fixed/2)) + "\n"		
+					}
+				g2+="g1x"+(((passB[i][0].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed)+"y"+ ((((passB[i][0].Y/scale)+ymax)/sfx)+y0).toFixed(4) + "f" + (feed/2).toFixed((fixed/2)) + "\n"
+				g2+="g0z"+ (retract/2).toFixed(fixed) +"\n"
+			}
+
+			g2+="g0z"+retract+"\n"
+			g2+="m5\n"
+
+			link.setAttribute("href", "data:text/plain;base64," + btoa(g2))
+			link.setAttribute("download", filename + "64.nc")
+			link.click()
+
+		}
+		else if(filetype=="sbp"){
+
+			g2+="MS," + ((material.feed/25.4/60)/2).toFixed(2) + "," + ((material.plunge/25.4/60)/2).toFixed(2) + "\n"
+			g2+="JZ,0.2\n"
+			g2+="SO,1,1\n"
+			g2+="PAUSE 5\n"
+	
+			for(i=0;i<passB.length;i++){
+				g2+="J2,"+(((passB[i][0].X/scale/25.4)+Math.abs(xmin)/25.4)+x0).toFixed(4)+","+ ((((passB[i][0].Y/scale)+ymax)/25.4)+y0).toFixed(4) + "\n"
+	   		g2+="MZ,-" + millDepth + "\n"
+				g2+="PAUSE 0.1\n"
+					for(j=1;j<passB[i].length;j++){
+						g2+="M2,"+(((passB[i][j].X/scale/25.4)+Math.abs(xmin)/25.4)+x0).toFixed(4) + "," + ((((passB[i][j].Y/scale)+ymax)/25.4)+y0).toFixed(4) + "\n"		
+					}
+				g2+="M2,"+(((passB[i][0].X/scale/25.4)+Math.abs(xmin)/25.4)+x0).toFixed(4) + "," + ((((passB[i][0].Y/scale)+ymax)/25.4)+y0).toFixed(4) + "\n"
+				g2+="JZ,0.1\n"
+			}
+
+			g2+="JZ,0.2\n"
+			g2+="SO,1,0\n"
+			
+
+			link.setAttribute("href", "data:text/plain;base64," + btoa(g2))
+			link.setAttribute("download", filename + "64.sbp")
+			link.click()
+
+		}
+
+		else if(filetype=="rml01"){
+
+			g2 += "PA;!VZ;!PZ0," + rmlOffset + ";\n"
+	
+			g2 += "PU" + x0 + "," + y0 + ";\n"
+			g2 += "!RC15;\n"
+			g2 += "!MC1;\n"
+
+			g2 += "V1;"
+			g2 += "Z" + x0 + "," + y0 + "," + rmlOffset + ";\n"
+			g2 += "!DW3000;\n"
+			g2 += "Z" + x0 + "," + y0 + "," + rmlOffset + ";\n"
+			
+
+			for(i=0;i<passC.length;i++){
+				g2+="PU"+(((passC[i][0].X/scale*100)+Math.abs(xmin)*100)+rmlXYOffset+x0).toFixed(0)+","+ ((((passC[i][0].Y/scale)+ymax)*100)+rmlXYOffset+y0).toFixed(0) + "\n"
+					for(j=0;j<passC[i].length;j++){
+						if(j==0){
+							g2 += "!DW10;\n"
+						}
+						else{
+							g2 += "!DW;\n"
+						}
+						g2+="Z"+(((passC[i][j].X/scale*100)+Math.abs(xmin)*100)+rmlXYOffset+x0).toFixed(0) + "," + ((((passC[i][j].Y/scale)+ymax)*100)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
+					}
+
+			}
+
+			g2+="PU;\n"
+			g2+="!MC0;\n"
+			g2+="V30;\n"	
+
+
+			link.setAttribute("href", "data:text/plain;base64," + btoa(g2))
+			link.setAttribute("download", filename + "100.rml")
+			link.click()
+
+		}
+		else if(filetype=="rml025"){
+
+			g2 += "PA;!VZ;!PZ0," + rmlOffset + ";\n"
+	
+			g2 += "PU" + x0 + "," + y0 + ";\n"
+			g2 += "!RC15;\n"
+			g2 += "!MC1;\n"
+
+			g2 += "V3;"
+			g2 += "Z" + x0 + "," + y0 + "," + rmlOffset + ";\n"
+			g2 += "!DW3000;\n"
+			g2 += "Z" + x0 + "," + y0 + "," + rmlOffset + ";\n"
+			g2 += "!DW10;\n"
+
+
+			for(i=0;i<passB.length;i++){
+				g2+="PU"+(((passB[i][0].X/scale*40)+Math.abs(xmin)*40)+rmlXYOffset+x0).toFixed(0)+","+ ((((passB[i][0].Y/scale)+ymax)*40)+rmlXYOffset+y0).toFixed(0) + "\n"
+					for(j=0;j<passB[i].length;j++){
+						if(j==0){
+							g2 += "!DW10;\n"
+						}
+						else{
+							g2 += "!DW;\n"
+						}
+						g2+="Z"+(((passB[i][j].X/scale*40)+Math.abs(xmin)*40)+rmlXYOffset+x0).toFixed(0) + "," + ((((passB[i][j].Y/scale)+ymax)*40)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
+					}
+
+			}
+
+			g+="PU;\n"
+			g+="!MC0;\n"
+			g+="V30;\n"
+	
+
+			link.setAttribute("href", "data:text/plain;base64," + btoa(g2))
+			link.setAttribute("download", filename + "64.rml")
+			link.click()
+
+		}
+
+	}
+
+
+
+
 	if(document.getElementById('side').value=="top"){
 		flip()
 	}
@@ -1005,6 +1159,19 @@ function flip(){
 			}
 		}
 	}
+
+
+   for(i=0;i<passC.length;i++){
+		for(j=0;j<passC[i].length;j++){
+			if((passC[i][j].Y)<0){
+				passC[i][j]={X:passC[i][j].X,Y:(Math.abs(passC[i][j].Y))}
+			}
+			else{
+				passC[i][j]={X:passC[i][j].X,Y:(0-(passC[i][j].Y))}	
+			}
+		}
+	}
+
 
    for(i=0;i<pins.length;i++){
 		for(j=0;j<pins[i].length;j++){

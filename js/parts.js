@@ -345,6 +345,7 @@ function add_trace(){
 	}
 	//
 
+	
 	//console.log(finishPass2)
 	//finishPass2=true
 
@@ -361,9 +362,12 @@ function add_trace(){
 		}
 
 		passC=offset
+		//passC.splice(0,1)
 
 	}
 
+
+	//console.log(passC.length)
 	//console.log(passC)
 
 
