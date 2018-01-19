@@ -145,7 +145,7 @@ for(i=24;i<31;i++){
 
 
 draw()
-load()
+//load()
 
 }
 

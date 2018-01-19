@@ -338,7 +338,7 @@ if((on_grid==true)&&(pan==false)){
 		ctx.fill()	
 	}
 	else if(document.getElementById("type").value=="via"){
-		ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.55*sf,0,(Math.PI*2) )
+		ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.6*sf,0,(Math.PI*2) )
 		ctx.fill()
 		ctx.beginPath()
 		ctx.fillStyle="#fff"
@@ -400,6 +400,9 @@ if((on_grid==true)&&(pan==false)){
 		}
 		else if(padType=="0.01"){
 			padSize = 0.142
+		}
+		else if(padType=="0.05"){
+			padSize = 0.71
 		}
 		ctx.moveTo((ctx.canvas.width/2)+((mouseX-padSize)*sf),(ctx.canvas.height/2)+((mouseY-padSize)*sf))
 		ctx.lineTo((ctx.canvas.width/2)+((mouseX-padSize)*sf),(ctx.canvas.height/2)+((mouseY+padSize)*sf))

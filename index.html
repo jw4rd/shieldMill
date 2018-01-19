@@ -4,7 +4,7 @@
 
 <html lang="en"> 
 <head>
-	<title>SHIELD MILL</title>
+	<title>PCB MILL</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
 	<link href="css/style.css" rel="stylesheet">
 	<script src="js/libs/jquery-1.11.2.min.js"></script>
@@ -28,6 +28,7 @@
 
   <option value="smd" data-part="0.01">pad (SMD 0.01")</option>
   <option value="smd" data-part="0.03">pad (SMD 0.03")</option>
+  <option value="smd" data-part="0.05">pad (SMD 0.05")</option>
   <option value="smd" data-part="0.06">pad (SMD 0.06")</option>
 
   <option value="pad0310">pad (SMD 0.03x0.1")</option>
@@ -63,9 +64,11 @@
   <option value="1mm">grid: 1mm</option>
 </select>
 
-<select id="project" autocomplete="on">
-  <option value="default" selected>default</option>
-  <option value="led">led</option>
+<select id="project" autocomplete="off">
+  <option value="default" selected disabled>projects</option>
+  <option value="t44">t44</option>
+  <option value="t44_ftdi">t44 ftdi</option>
+  <option value="t45">t45</option>
 </select>
 
 
@@ -200,6 +203,18 @@ y:
 <script>
 
 //TODO
+
+/*
+0.5mm grid
+1x2.5mm pad
+0.05 x 0.1 pad
+0.05 x 0.05 pad
+0.06 od pad
+0.08" trace
+
+
+
+*/
 
 //reverse clear all path
 //
@@ -422,7 +437,7 @@ $("#myCanvas").on('click', function(e) {
 			if((document.getElementById("type").value=="dip")||(document.getElementById("type").value=="via")){
 				drill = true
 				if(document.getElementById("type").value=="via"){
-					r=0.55
+					r=0.6
 				}
 			}
 			else if(document.getElementById("type").value.substring(1,4)=="pad"){
@@ -433,7 +448,7 @@ $("#myCanvas").on('click', function(e) {
 					r=0.425
 				}	
 				else if(document.getElementById("type").value=="Rpad5"){
-					r=0.585
+					r=0.7
 				}
 			}
 			else if(document.getElementById("type").value=="route"){
@@ -452,8 +467,8 @@ $("#myCanvas").on('click', function(e) {
 				d = 0.06
 			}
 			else if(document.getElementById("type").value=="routeE"){
-				r = 0.03
-				d = 0.02
+				r = 0.042
+				d = 0.04
 			}
 			else if(document.getElementById("type").value=="hole"){
 				r = 1.27
@@ -462,6 +477,10 @@ $("#myCanvas").on('click', function(e) {
 			else if(padType=="0.03"){
 				//finishPass=true
 				r=0.425
+			}
+			else if(padType=="0.05"){
+				//finishPass=true
+				r=0.71
 			}
 			else if(padType=="0.01"){
 				//finishPass=true
@@ -1000,10 +1019,17 @@ $(document).keydown(function(e){
 		add_trace()
 
 	}
-
 	else if(e.which === 72){
 		help()
 	}
+	else if(e.which === 83){
+		save()
+	}
+	else if(e.which === 76){
+		
+		load()
+	}
+
 
 
 	}
@@ -1165,7 +1191,7 @@ panY = 0
 line = false
 seg = 0
 
-console.log(zoom)
+//console.log(zoom)
 
 if(document.getElementById("board").value=="arduino"){
 	xmin = -24.1 
@@ -1274,26 +1300,45 @@ $("#y-bot").on("change", function(){
 
 })
 
-function load(){
+
+$("#project").on("change", function(){
+
+	//console.log($(this).val())
+
+	load("js/boards/" + $(this).val() + ".json")
+
+})
+
+function load(board){
 	
-	//if(fabmo.isPresent()==false){
-		myConfig = localStorage.getItem("default")
+
+	//console.log(board)
+
+	$.getJSON(board, function(json) {
+    	
+	}).done(function(data){
+
+	
+		myConfig = data
+
+		//console.log(myConfig)
+		loadConfig(myConfig)
+
+
+	})
+ 
+
+	/*
 		if(myConfig!=null){
 			myConfig = JSON.parse(myConfig)
 
 			loadConfig(myConfig)
 		}
 		add_trace()
-	//}
-	/*
-	else if(fabmo.isPresent()==true){
-		fabmo.getAppConfig(function(err, myConfig) {
-			if(myConfig.finishPass!=undefined){
-				loadConfig(myConfig)
-			}
-		})
-	}
 	*/
+
+
+	}
 
 	function loadConfig(myConfig){
 
@@ -1326,7 +1371,7 @@ function load(){
 		add_trace()
 	}
 
-}
+
 
 function save(){
 	
@@ -1345,12 +1390,25 @@ function save(){
 	myBoard.traceNum = traceNum
 	myBoard.partNum = partNum
 
-	if(fabmo.isPresent()==false){
-		localStorage.setItem("default",JSON.stringify(myBoard))	
-	}
-	else if(fabmo.isPresent()==true){
-		fabmo.setAppConfig(myBoard)
-	}	
+	//if(fabmo.isPresent()==false){
+	//	localStorage.setItem("default",JSON.stringify(myBoard))	
+	//}
+	//else if(fabmo.isPresent()==true){
+	//	fabmo.setAppConfig(myBoard)
+	//}	
+
+	//console.log(myBoard)
+
+
+	myBoard = JSON.stringify(myBoard,null,2)
+ 
+	//console.log(myBoard)	
+	link = document.getElementById("downloadLink")
+
+
+	link.setAttribute("href", "data:text/plain;base64," + btoa(myBoard))
+	link.setAttribute("download", "board.json")
+	link.click()
 
 }
 

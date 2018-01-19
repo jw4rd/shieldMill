@@ -16,6 +16,10 @@ The toolpath is generated as the board is designed.
 
 ### circuit boards designed with Shield Mill
 
+![shield](https://raw.github.com/jw4rd/shieldmill/master/img/44ftdi.png)  
+![shield](https://raw.github.com/jw4rd/shieldmill/master/img/44ftdi1.jpg)  
+![shield](https://raw.github.com/jw4rd/shieldmill/master/img/44ftdi2.jpg)  
+
 ![shield](https://raw.github.com/jw4rd/shieldmill/master/img/pcbs.jpg)  
 
 ## Getting Started

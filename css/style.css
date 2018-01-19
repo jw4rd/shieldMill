@@ -250,11 +250,11 @@ depth{
 }
 
 #project{
-	display: none;
+
 	position: absolute;
 	left: 10px;
-	bottom: 130px;
-	width: 100px;
+	bottom: 60px;
+	width: 120px;
 	height: 37px;
 }
 
