@@ -1,7 +1,7 @@
 
 function make(){
 
-	var material = {feed:150,plunge:100}  
+	var material = {feed:300,plunge:150}  
 	var pass_depth = 0.425
 
 	var dip = true
@@ -12,7 +12,7 @@ function make(){
 
 	var filename = prompt("Filename?")
 	
-	console.log(filetype)
+	//console.log(filetype)
 
 	filename += "_"
 
@@ -56,8 +56,11 @@ function make(){
 	//
 	var millDepth=0.005
 
-	var plunge = (material.plunge/25.4).toFixed(0)
-	var feed = (material.feed/25.4).toFixed(0)
+	var plunge = (material.plunge/25.4).toFixed(1)
+	var feed = (material.feed/25.4).toFixed(1)
+
+	//alert(feed)
+
 	var retract = 0.2
 	var sfx = 25.4
 	var fixed = 4
@@ -69,11 +72,12 @@ function make(){
 		plunge = material.plunge
 		feed = material.feed
 		retract= (0.2*25.4).toFixed(2)
-		alert(retract)
 		sfx = 1
 		fixed = 2
 		millDepth=0.125	
 	}
+
+
 
 
 	g=""
@@ -215,7 +219,7 @@ function make(){
 				g+="J2,"+(((vias[i][0].X+Math.abs(xmin))/25.4)+x0).toFixed(4)+","+ (((vias[i][0].Y+ymax)/25.4)+y0).toFixed(4) + "\n"
 			}
 			else if(filetype=="gcode"){
-				g+="g0x"+(((vias[i][0].X+Math.abs(xmin))/sfx)+x0).toFixed(fixed)+"y"+ (((vias[i][0].Y+ymax)/25.4)+sfx).toFixed(fixed) + "\n"			
+				g+="g0x"+(((vias[i][0].X+Math.abs(xmin))/sfx)+x0).toFixed(fixed)+"y"+ (((vias[i][0].Y+ymax)/sfx)+y0).toFixed(fixed) + "\n"			
 			}
 			else if(filetype=="rml01"){
 				g+="PU"+(((vias[i][0].X+Math.abs(xmin))*100)+rmlXYOffset+x0).toFixed(0)+","+ (((vias[i][0].Y+ymax)*100)+rmlXYOffset+y0).toFixed(0) + ";\n"			
@@ -771,6 +775,9 @@ function make(){
 
 		link.setAttribute("href", "data:text/plain;base64," + btoa(g))
 		link.setAttribute("download", filename + "32.sbp")
+
+		//console.log(feed)
+
 		link.click()
 	}
 	else if(filetype=="gcode"){
@@ -779,6 +786,9 @@ function make(){
 
 		link.setAttribute("href", "data:text/plain;base64," + btoa(g))
 		link.setAttribute("download", filename + "32.nc")
+
+		//console.log(feed)
+
 		link.click()
 
 	}
@@ -825,9 +835,9 @@ function make(){
 	   		g2+="g1z-"+ millDepth + "f" + (plunge/2).toFixed((fixed/2)) + "\n"
 				g2+="g4p0.1\n"
 					for(j=1;j<passB[i].length;j++){
-						g2+="g1x"+(((passB[i][j].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed) + "y" + ((((passB[i][j].Y/scale)+ymax)/sfx)+y0).toFixed(fixed) + "f" + (feed/2).toFixed((fixed/2)) + "\n"		
+						g2+="g1x"+(((passB[i][j].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed) + "y" + ((((passB[i][j].Y/scale)+ymax)/sfx)+y0).toFixed(fixed) + "f" + (feed/2).toFixed((1)) + "\n"		
 					}
-				g2+="g1x"+(((passB[i][0].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed)+"y"+ ((((passB[i][0].Y/scale)+ymax)/sfx)+y0).toFixed(4) + "f" + (feed/2).toFixed((fixed/2)) + "\n"
+				g2+="g1x"+(((passB[i][0].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed)+"y"+ ((((passB[i][0].Y/scale)+ymax)/sfx)+y0).toFixed(4) + "f" + (feed/2).toFixed((1)) + "\n"
 				g2+="g0z"+ (retract/2).toFixed(fixed) +"\n"
 			}
 
@@ -948,7 +958,7 @@ function make(){
 	}
 
 
-	material = {feed:75,plunge:25}
+	//material = {feed:75,plunge:25}
 
 
 	if(finishPass2==true){
@@ -973,9 +983,9 @@ function make(){
 	   		g2+="g1z-"+ millDepth + "f" + (plunge/2).toFixed((fixed/2)) + "\n"
 				g2+="g4p0.1\n"
 					for(j=1;j<passC[i].length;j++){
-						g2+="g1x"+(((passC[i][j].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed) + "y" + ((((passC[i][j].Y/scale)+ymax)/sfx)+y0).toFixed(fixed) + "f" + (feed/2).toFixed((fixed/2)) + "\n"		
+						g2+="g1x"+(((passC[i][j].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed) + "y" + ((((passC[i][j].Y/scale)+ymax)/sfx)+y0).toFixed(fixed) + "f" + (feed/3).toFixed((1)) + "\n"		
 					}
-				g2+="g1x"+(((passC[i][0].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed)+"y"+ ((((passC[i][0].Y/scale)+ymax)/sfx)+y0).toFixed(4) + "f" + (feed/2).toFixed((fixed/2)) + "\n"
+				g2+="g1x"+(((passC[i][0].X/scale/sfx)+Math.abs(xmin)/sfx)+x0).toFixed(fixed)+"y"+ ((((passC[i][0].Y/scale)+ymax)/sfx)+y0).toFixed(4) + "f" + (feed/3).toFixed((1)) + "\n"
 				g2+="g0z"+ (retract/2).toFixed(fixed) +"\n"
 			}
 
@@ -1061,7 +1071,7 @@ function make(){
 			g2 += "!RC15;\n"
 			g2 += "!MC1;\n"
 
-			g2 += "V3;"
+			g2 += "V1;"
 			g2 += "Z" + x0 + "," + y0 + "," + rmlOffset + ";\n"
 			g2 += "!DW3000;\n"
 			g2 += "Z" + x0 + "," + y0 + "," + rmlOffset + ";\n"

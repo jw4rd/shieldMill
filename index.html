@@ -108,8 +108,8 @@ y:
 <input id="select" type="submit" value="delete" onclick="ripup()"/>
 
 <select  class="input" id="file" autocomplete="on">
-  <option value="gcode">G-code inch (tap)</option>
-  <option value="gcode_mm">G-code mm (tap)</option>
+  <option value="gcode">G-code inch (nc)</option>
+  <option value="gcode_mm">G-code mm (nc)</option>
   <option value="rml01">Roland MDX 40/540 (rml)</option>
   <option value="rml01" selected>Roland SRM 20 (rml)</option>
   <option value="rml025">Roland MDX 15/20 (rml)</option>
@@ -1310,6 +1310,16 @@ $("#project").on("change", function(){
 	//console.log($(this).val())
 
 	load("js/boards/" + $(this).val() + ".json")
+
+	$("#project").blur()
+
+})
+
+
+
+$("#file").on("change", function(){
+
+	$("#file").blur()
 
 })
 
