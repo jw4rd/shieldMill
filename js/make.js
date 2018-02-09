@@ -902,6 +902,7 @@ function make(){
 						}
 						g2+="Z"+(((passB[i][j].X/scale*100)+Math.abs(xmin)*100)+rmlXYOffset+x0).toFixed(0) + "," + ((((passB[i][j].Y/scale)+ymax)*100)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
 					}
+				g2+="Z"+(((passB[i][0].X/scale*100)+Math.abs(xmin)*100)+rmlXYOffset+x0).toFixed(0) + "," + ((((passB[i][0].Y/scale)+ymax)*100)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
 
 			}
 
@@ -941,6 +942,7 @@ function make(){
 						}
 						g2+="Z"+(((passB[i][j].X/scale*40)+Math.abs(xmin)*40)+rmlXYOffset+x0).toFixed(0) + "," + ((((passB[i][j].Y/scale)+ymax)*40)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
 					}
+				g2+="Z"+(((passB[i][0].X/scale*40)+Math.abs(xmin)*40)+rmlXYOffset+x0).toFixed(0) + "," + ((((passB[i][0].Y/scale)+ymax)*40)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
 
 			}
 
@@ -1050,6 +1052,7 @@ function make(){
 						}
 						g2+="Z"+(((passC[i][j].X/scale*100)+Math.abs(xmin)*100)+rmlXYOffset+x0).toFixed(0) + "," + ((((passC[i][j].Y/scale)+ymax)*100)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
 					}
+					g2+="Z"+(((passC[i][0].X/scale*100)+Math.abs(xmin)*100)+rmlXYOffset+x0).toFixed(0) + "," + ((((passC[i][0].Y/scale)+ymax)*100)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
 
 			}
 
@@ -1089,6 +1092,7 @@ function make(){
 						}
 						g2+="Z"+(((passC[i][j].X/scale*40)+Math.abs(xmin)*40)+rmlXYOffset+x0).toFixed(0) + "," + ((((passC[i][j].Y/scale)+ymax)*40)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
 					}
+					g2+="Z"+(((passC[i][0].X/scale*40)+Math.abs(xmin)*40)+rmlXYOffset+x0).toFixed(0) + "," + ((((passC[i][0].Y/scale)+ymax)*40)+rmlXYOffset+y0).toFixed(0) + ",-" + 20 + "\n"		
 
 			}
 

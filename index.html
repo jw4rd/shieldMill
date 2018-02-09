@@ -62,13 +62,16 @@
   <option value="0.025">grid: 0.025"</option>
   <option value="0.01">grid: 0.01"</option>
   <option value="1mm">grid: 1mm</option>
+  <option value="0.5mm">grid: 0.5mm</option>
 </select>
 
 <select id="project" autocomplete="off">
   <option value="default" selected disabled>projects</option>
+  <option value="fabisp">fabisp</option>
   <option value="t44">t44</option>
   <option value="t44_ftdi">t44 ftdi</option>
   <option value="t45">t45</option>
+
 </select>
 
 
@@ -187,7 +190,7 @@ y:
 	<br>r
 </p>
 
-<center><a href="https://www.github.com/jw4rd/shield">gitHub</a></center>
+<center><a href="https://www.github.com/jw4rd/shieldMill">gitHub</a></center>
 
 <div style="clear: both;"></div>
 </div>
@@ -216,7 +219,7 @@ y:
 
 */
 
-//reverse clear all path
+
 //
 //delete part/trace, actions[], undo delete
 //
@@ -504,6 +507,10 @@ $("#myCanvas").on('click', function(e) {
 				//finishPass=true
 				space = 0.5
 			}
+			else if((document.getElementById("grid").value)=="0.5mm"){
+				//finishPass=true
+				space = 0.25
+			}
 			else{
 				space = 1.27
 			}
@@ -776,8 +783,8 @@ $("#myCanvas").on('click', function(e) {
 		
 	}
 
-	console.log(partNum)
-	console.log(net)
+	//console.log(partNum)
+	//console.log(net)
 
 })
 
@@ -827,6 +834,9 @@ $("#myCanvas").on('mousemove', function(e) {
 	}
 	else if((document.getElementById("grid").value)=="1mm"){
 		space = 0.5
+	}
+	else if((document.getElementById("grid").value)=="0.5mm"){
+		space = 0.25
 	}
 	else{
 		space=1.27
@@ -1307,7 +1317,7 @@ $("#y-bot").on("change", function(){
 
 $("#project").on("change", function(){
 
-	//console.log($(this).val())
+	console.log($(this).val())
 
 	load("js/boards/" + $(this).val() + ".json")
 
@@ -1331,13 +1341,11 @@ function load(board){
 	$.getJSON(board, function(json) {
     	
 	}).done(function(data){
-
 	
 		myConfig = data
 
 		//console.log(myConfig)
 		loadConfig(myConfig)
-
 
 	})
  
@@ -1413,14 +1421,13 @@ function save(){
 
 	//console.log(myBoard)
 
-
-	myBoard = JSON.stringify(myBoard,null,2)
+	myJson = JSON.stringify(myBoard,null,2)
  
-	//console.log(myBoard)	
+	//console.log(myJson)	
 	link = document.getElementById("downloadLink")
 
 
-	link.setAttribute("href", "data:text/plain;base64," + btoa(myBoard))
+	link.setAttribute("href", "data:text/plain;base64," + btoa(myJson))
 	link.setAttribute("download", "board.json")
 	link.click()
 
@@ -1428,7 +1435,7 @@ function save(){
 
 function ripup(){
 
-	console.log(traceNum)
+	//console.log(traceNum)
 	
 	if((pad==1)&&(document.getElementById("type").value=="resistor")){
 
@@ -1459,8 +1466,9 @@ function ripup(){
 		remove = parseInt(document.getElementById("part-list").value)
 	}
 	else{
-		remove = $('#part-list option:last-child').val();
+		remove = $('#part-list option:last-child').val()
 	}
+
 	
 	document.getElementById("part-list").value = "part"
 	
@@ -1509,7 +1517,6 @@ function ripup(){
 
 	key=false
 	
-
 	document.getElementById("part-list").value = $('#part-list option:last-child').val()
 
 	add_trace()

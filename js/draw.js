@@ -640,17 +640,22 @@ ctx.font = (size_font + "px Arial")
 ctx.fillStyle="#777"
 ctx.translate( (ctx.canvas.width/2)-xo,ctx.canvas.height/2)
 
+	var space
+
 	if((document.getElementById("grid").value)=="0.05"){
-		var space = 1.27
+		space = 1.27
 	}
 	else if((document.getElementById("grid").value)=="0.025"){
-		var space = 0.635
+		space = 0.635
 	}
 	else if((document.getElementById("grid").value)=="1mm"){
-		var space = 1
+		space = 1
+	}
+	else if((document.getElementById("grid").value)=="0.5mm"){
+		space = 0.5
 	}
 	else{
-		var space=2.54
+		space=2.54
 	}
 
 if((document.getElementById("file").value)=="gcode_mm"){

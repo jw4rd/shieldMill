@@ -758,11 +758,82 @@ function makeGrid(){
 
 		//columns=j
 
-		console.log(j)
+		//console.log(j)
 		//console.log(columns)
 
 		for(i=0;i<j;i++){
 			grid.push([{X:grid[0][0].X+i,Y:grid[0][0].Y},{X:grid[0][0].X+i,Y:(21.61+y)+1}])
+		}		
+		
+	}
+	else if((document.getElementById("grid").value)=="0.5mm"){
+		space = 0.5
+		rows = 98
+		columns = 93
+		gridScale = 5.08
+		pinNum=0
+
+		y=2.54+(parseInt(document.getElementById("y-bot").value*gridScale)*space)
+
+		
+
+		for(i=0;i<rows+(parseInt(document.getElementById("y-top").value*gridScale))+(parseInt(document.getElementById("y-bot").value*gridScale));i++){
+			x=2.54-(parseInt(document.getElementById("x-left").value*gridScale)*space)
+
+			//grid.push([{X:-19.685+o+x,Y:21.61+y}])
+
+			for(j=0;j<columns+(parseInt(document.getElementById("x-right").value*gridScale))+(parseInt(document.getElementById("x-left").value*gridScale));j++){
+
+				//pins
+				if((j>=8+(parseInt(document.getElementById("x-left").value*gridScale)))&&(i<3+(parseInt(document.getElementById("y-bot").value*gridScale)))&&(i>=(parseInt(document.getElementById("y-bot").value*gridScale))) ){
+					if((j%2==0)&&(j<24+(parseInt(document.getElementById("x-left").value*gridScale)))){
+						pinNum++
+					}
+					else if((j%2==0)&&(j>24+(parseInt(document.getElementById("x-left").value*gridScale)))&&(j<37+(parseInt(document.getElementById("x-left").value*gridScale)))){
+						pinNum++
+					}
+					else if(j>=37+(parseInt(document.getElementById("x-left").value*gridScale))){
+						pinNum=0
+					}
+				}
+				else if((j>=0+(parseInt(document.getElementById("x-left").value*gridScale)))&&(i<39+(parseInt(document.getElementById("y-bot").value*gridScale)))&&(i>=(parseInt(document.getElementById("y-bot").value*gridScale+36))) ){
+					if(j==0+(parseInt(document.getElementById("x-left").value*gridScale)) ){
+						pinNum=15
+					}
+					else if(j==22+(parseInt(document.getElementById("x-left").value*gridScale))){
+						pinNum=25
+					}
+					else if((j%2==0)&&(j>(parseInt(document.getElementById("x-left").value*gridScale))) ){
+						pinNum++
+					}
+				}
+				else{
+					pinNum=0
+				}
+				//
+
+				if(j==0){
+					grid.push([{X:-19.685+o+x,Y:21.61+y}])
+					//grid.push([{X:-19.685+o+x,Y:21.61+y}])
+				}
+
+				pts.push({X:-19.685+o+x,Y:21.61+y,PIN:pinNum})
+				x+=space
+			}
+
+			
+			grid[i].push({X:(-19.685+o+x)-space,Y:(21.61+y)})
+
+			y-=space
+		}
+
+		//columns=j
+
+		//console.log(j)
+		//console.log(columns)
+
+		for(i=0;i<j;i++){
+			grid.push([{X:grid[0][0].X+(i*space),Y:grid[0][0].Y},{X:grid[0][0].X+(i*space),Y:(21.61+y)+space}])
 		}		
 		
 	}
@@ -876,7 +947,7 @@ function makeGrid(){
 	}
 
 
-		if((document.getElementById("grid").value)!="1mm"){
+		if(((document.getElementById("grid").value)!="1mm")&&((document.getElementById("grid").value)!="0.5mm")){
 			y = 3.79
 			for(i=0;i<rows+(parseInt(document.getElementById("y-top").value)*gridScale)+(parseInt(document.getElementById("y-bot").value)*gridScale);i++){
 				grid.push([{X:-19.685+2.54-(parseInt(document.getElementById("x-left").value)*2.54)+o,Y:25.4+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)-y},{X:29.845-2.54+o+1.27+(parseFloat(document.getElementById("x-right").value)*2.54),Y:25.4+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)-y}])
@@ -889,7 +960,7 @@ function makeGrid(){
 			}	
 
 		}
-		else if((document.getElementById("grid").value)=="1mm"){
+		else if(((document.getElementById("grid").value)=="1mm")||((document.getElementById("grid").value)=="0.5mm")){
 			y = 3.79
 			for(i=0;i<(rows+(parseInt(document.getElementById("y-top").value)*gridScale)+(parseInt(document.getElementById("y-bot").value)*gridScale));i++){
 				//grid.push([{X:(-19.685+2.54-(parseInt(document.getElementById("x-left").value)*2.54)+o),Y:25.4+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)-y},{X:(29.845-2.54+o+1.27+(parseFloat(document.getElementById("x-right").value)*2.54)),Y:25.4+2.54+(parseInt(document.getElementById("y-bot").value)*2.54)-y}])
@@ -984,11 +1055,6 @@ function makeGrid(){
 				}
 			}
 
-			//console.log(xmax)
-
-
-
-			//console.log(xend)
 
 			for(i=1;i<yend;i++){
 				grid.push([{X:Math.round(xmin)+1,Y:(Math.round(ymax)-(i))},{X:Math.round(xmax)-1,Y:(Math.round(ymax)-(i))}])
@@ -1000,7 +1066,28 @@ function makeGrid(){
 				grid.push([{X:(Math.round(xmin)+(i)),Y:(Math.round(ymax)-1)},{X:(Math.round(xmin)+(i)),Y:(Math.round(ymin+1))}])
 			}	
 		}
+		else if((document.getElementById("grid").value)=="0.5mm"){
 
+			xend=( (Math.round(Math.abs(xmin))) + (Math.round(xmax)) )*2
+			yend=( (Math.round(Math.abs(ymin))) + (Math.round(ymax)) )*2
+
+			for(i=0;i<(yend)-3;i++){
+				for(j=2;j<(xend)-1;j++){
+					pts.push({X:(Math.round(xmin)+0+(j/2)),Y:(Math.round(ymax)-1-(i/2))})
+				}
+			}
+
+
+			for(i=2;i<yend-1;i++){
+				grid.push([{X:Math.round(xmin)+1,Y:(Math.round(ymax)-(i/2))},{X:Math.round(xmax)-1,Y:(Math.round(ymax)-(i/2))}])
+			}
+			//console.log(xmax-1)
+
+
+			for(i=2;i<xend-1;i++){
+				grid.push([{X:(Math.round(xmin)+(i/2)),Y:(Math.round(ymax)-1)},{X:(Math.round(xmin)+(i/2)),Y:(Math.round(ymin+1))}])
+			}	
+		}
 		//console.log(grid)
 
 	}
