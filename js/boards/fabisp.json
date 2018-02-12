@@ -41840,8 +41840,8 @@
   "hole": [],
   "board": "blank",
   "side": "top",
-  "grid": "0.01",
-  "finishPass": true,
+  "grid": "0.025",
+  "finishPass": false,
   "pkgOutlines": [
     [
       {
