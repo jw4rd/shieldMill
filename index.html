@@ -66,7 +66,7 @@
 </select>
 
 <select id="project" autocomplete="off">
-  <option value="default" selected disabled>projects</option>
+  <option value="projects" selected disabled>projects</option>
   <option value="fabisp">fabisp attiny45</option>
   <option value="t44">attiny44</option>
   <option value="t44_ftdi">attiny44 ftdi</option>
@@ -1184,6 +1184,9 @@ $('.parts').hover(function(e) {
 
 $("#board").on("change", function(){
 
+
+$("#project").val("projects")
+
 $("#board").blur()
 
 $("#part-list").empty()
@@ -1319,7 +1322,7 @@ $("#y-bot").on("change", function(){
 
 $("#project").on("change", function(){
 
-	console.log($(this).val())
+	//console.log($(this).val())
 
 	load("js/boards/" + $(this).val() + ".json")
 
@@ -1332,6 +1335,14 @@ $("#project").on("change", function(){
 $("#file").on("change", function(){
 
 	$("#file").blur()
+
+})
+
+
+
+$("#select").on("click", function(){
+
+	$("#part-list").focus()
 
 })
 
