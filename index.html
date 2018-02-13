@@ -57,9 +57,9 @@
 </select>
 
 <select  class="input" id="grid" autocomplete="on">
-  <option value="0.1">grid: 0.1"</option>
+  <option value="0.1" selected>grid: 0.1"</option>
   <option value="0.05">grid: 0.05"</option>
-  <option value="0.025" selected>grid: 0.025"</option>
+  <option value="0.025">grid: 0.025"</option>
   <option value="0.01">grid: 0.01"</option>
   <option value="1mm">grid: 1mm</option>
   <option value="0.5mm">grid: 0.5mm</option>
@@ -1185,8 +1185,6 @@ $('.parts').hover(function(e) {
 $("#board").on("change", function(){
 
 
-//$("#project").val("projects")
-
 $("#board").blur()
 
 $("#part-list").empty()
@@ -1213,6 +1211,7 @@ seg = 0
 //console.log(zoom)
 
 if(document.getElementById("board").value=="arduino"){
+	$("#project").val("projects")
 	xmin = -24.1 
 	ymin = -25.4   
 	xmax = 24.1  	 
@@ -1322,7 +1321,6 @@ $("#y-bot").on("change", function(){
 
 $("#project").on("change", function(){
 
-	//console.log($(this).val())
 
 	load("js/boards/" + $(this).val() + ".json")
 
@@ -1486,7 +1484,6 @@ function ripup(){
 
 	sel = document.querySelector("#part-list")
 
-	//console.log(remove)
 
 	console.log(sel.options.length)
 	
@@ -1503,7 +1500,6 @@ function ripup(){
 		}
 
 	}
-	
 	
 
 	if(sel.options.length==2){
@@ -1534,7 +1530,7 @@ function ripup(){
 	
 	for(i=0;i<traceNum.length;i++){
 		if(traceNum[i].part==remove){
-			//console.log(traceNum[i].trace.length)
+
 			if(traceNum[i].trace.length==3){
 				trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[],[],[])
 			}
