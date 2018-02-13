@@ -1344,6 +1344,7 @@ $("#select").on("click", function(){
 
 	$("#part-list").focus()
 
+
 })
 
 function load(board){
@@ -1482,8 +1483,37 @@ function ripup(){
 		remove = $('#part-list option:last-child').val()
 	}
 
+
+	sel = document.querySelector("#part-list")
+
+	//console.log(remove)
+
+	console.log(sel.options.length)
 	
-	document.getElementById("part-list").value = "part"
+	for (i=0;i<sel.options.length;i++) {
+
+
+		if((sel.options[i].value==remove)&&(i==1)&&(sel.options.length>2)){
+			document.getElementById("part-list").value = sel.options[i+1].value
+		}
+		else if((sel.options[i].value==remove)&&(i>2)){
+	
+			document.getElementById("part-list").value = sel.options[i-1].value
+
+		}
+
+	}
+	
+	
+
+	if(sel.options.length==2){
+
+		$("#part-list").empty()
+		$("#part-list").append("<option value=\"part\" selected disabled>part#</option>")
+
+
+	}
+
 	
 	$( "#part"+remove ).remove()
 	
@@ -1530,7 +1560,7 @@ function ripup(){
 
 	key=false
 	
-	document.getElementById("part-list").value = $('#part-list option:last-child').val()
+	
 
 	add_trace()
 	
