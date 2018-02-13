@@ -57,9 +57,9 @@
 </select>
 
 <select  class="input" id="grid" autocomplete="on">
-  <option value="0.1" selected>grid: 0.1"</option>
+  <option value="0.1">grid: 0.1"</option>
   <option value="0.05">grid: 0.05"</option>
-  <option value="0.025">grid: 0.025"</option>
+  <option value="0.025" selected>grid: 0.025"</option>
   <option value="0.01">grid: 0.01"</option>
   <option value="1mm">grid: 1mm</option>
   <option value="0.5mm">grid: 0.5mm</option>
@@ -67,10 +67,10 @@
 
 <select id="project" autocomplete="off">
   <option value="default" selected disabled>projects</option>
-  <option value="fabisp">fabisp</option>
-  <option value="t44">t44</option>
-  <option value="t44_ftdi">t44 ftdi</option>
-  <option value="t45">t45</option>
+  <option value="fabisp">fabisp attiny45</option>
+  <option value="t44">attiny44</option>
+  <option value="t44_ftdi">attiny44 ftdi</option>
+  <option value="t45">attiny45</option>
 
 </select>
 
@@ -208,14 +208,16 @@ y:
 //TODO
 
 /*
-0.5mm grid
-1x2.5mm pad
-0.05 x 0.1 pad
-0.05 x 0.05 pad
-0.06 od pad
-0.08" trace
+datasheets/docs
 
+t45
+http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2586-AVR-8-bit-Microcontroller-ATtiny25-ATtiny45-ATtiny85_Datasheet.pdf
 
+t44
+http://ww1.microchip.com/downloads/en/DeviceDoc/doc8006.pdf
+
+fabisp
+http://fab.cba.mit.edu/classes/863.16/doc/projects/ftsmin/index.html
 
 */
 
