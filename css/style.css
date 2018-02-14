@@ -6,6 +6,19 @@ body{
 	font-family: arial;
 }
 
+a{
+	color:#0000ff;
+	text-decoration:none;
+}
+
+a:visited{
+	color:#0000ff;
+}
+
+a:hover{
+	text-decoration:underline;
+}
+
 #myCanvas{
    cursor: crosshair;
 }
@@ -20,6 +33,20 @@ input{
 	position: absolute;
 	right: 0px;
 	top: 280px;
+}
+
+#docs{
+	position: absolute;
+	left: 310px;
+	top: 15px;
+	display:none;
+}
+
+#data{
+	position: absolute;
+	left: 310px;
+	top: 35px;
+	display:none;
 }
 
 #finish2{
@@ -54,21 +81,17 @@ input{
 	top: 205px;
 }
 
-
 #toolPath{
 	position: absolute;
 	right: 55px;
 	top: 245px;
 }
 
-
 #finishPass{
 	position: absolute;
 	right: 55px;
 	top: 285px;
 }
-
-
 
 #input_submit{
 	position: absolute;
@@ -254,7 +277,7 @@ depth{
 	position: absolute;
 	left: 160px;
 	top: 14px;
-	width: 120px;
+	width: 130px;
 	height: 37px;
 }
 
@@ -265,7 +288,6 @@ depth{
 	width: 100px;
 	height: 37px;
 }
-
 
 #help-div{
 	display:none;
