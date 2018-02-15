@@ -22,10 +22,12 @@
   <option value="hole">hole (0.1"&#8960;)</option>
   <option value="dip">pad (DIP 0.06"&#8960;)</option>
 
+  <option value="Rpad05">pad (0.005"&#8960;)</option>
   <option value="Rpad1">pad (0.01"&#8960;)</option>
   <option value="Rpad3">pad (0.03"&#8960;)</option>
   <option value="Rpad5">pad (0.05"&#8960;)</option>
 
+  <option value="smd" data-part="0.005">pad (SMD 0.005")</option>
   <option value="smd" data-part="0.01">pad (SMD 0.01")</option>
   <option value="smd" data-part="0.03">pad (SMD 0.03")</option>
   <option value="smd" data-part="0.05">pad (SMD 0.05")</option>
@@ -71,6 +73,7 @@
   <option value="t44_ftdi">ftdi attiny44</option>
   <option value="t45">attiny45</option>
   <option value="t44">attiny44</option>
+  <option value="test1">test</option>
 </select>
 
 <div id="millAll">clear all</div>
@@ -438,6 +441,9 @@ $("#myCanvas").on('click', function(e) {
 			else if(document.getElementById("type").value.substring(1,4)=="pad"){
 				if(document.getElementById("type").value=="Rpad1"){
 					r=0.117
+				}
+				else if(document.getElementById("type").value=="Rpad05"){
+					r=0.071
 				}	
 				else if(document.getElementById("type").value=="Rpad3"){
 					r=0.425
@@ -476,6 +482,10 @@ $("#myCanvas").on('click', function(e) {
 			else if(padType=="0.05"){
 				//finishPass=true
 				r=0.71
+			}
+			else if(padType=="0.005"){
+				//finishPass=true
+				r=0.071
 			}
 			else if(padType=="0.01"){
 				//finishPass=true
@@ -1185,6 +1195,11 @@ $('#data').css({"display":"block"})
 
 if(project=="projects"){
 
+	$('#docs').css({"display":"none"})
+	$('#data').css({"display":"none"})
+
+}
+else if(project=="test1"){
 	$('#docs').css({"display":"none"})
 	$('#data').css({"display":"none"})
 

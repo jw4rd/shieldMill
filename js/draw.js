@@ -349,6 +349,9 @@ if((on_grid==true)&&(pan==false)){
 
 		if(document.getElementById("type").value=="Rpad1"){	
 			ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.117*sf,0,(Math.PI*2) )
+		}
+		else if(document.getElementById("type").value=="Rpad05"){	
+			ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.0585*sf,0,(Math.PI*2) )
 		}	
 		else if(document.getElementById("type").value=="Rpad3"){	
 			ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.4*sf,0,(Math.PI*2) )
@@ -397,6 +400,9 @@ if((on_grid==true)&&(pan==false)){
 		padSize = 0.85
 		if(padType=="0.03"){
 			padSize = 0.425
+		}
+		else if(padType=="0.005"){
+			padSize = 0.071
 		}
 		else if(padType=="0.01"){
 			padSize = 0.142
