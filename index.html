@@ -1182,6 +1182,7 @@ console.log(project)
 $('#docs').css({"display":"block"})
 $('#data').css({"display":"block"})
 
+
 if(project=="projects"){
 
 	$('#docs').css({"display":"none"})
@@ -1255,8 +1256,7 @@ if(document.getElementById("board").value=="arduino"){
 	radius = 0.75
 	makeFrame(radius) 
 	makeGrid()
-	$('#docs').css({"display":"block"})
-	$("#docs").attr("href", "https://www.arduino.cc/")
+	$('#docs').css({"display":"none"})
 	$('#data').css({"display":"none"})
 
 }
@@ -1278,12 +1278,6 @@ add_trace()
 
 })
 
-
-if(document.getElementById("board").value=="arduino"){
-	$('#docs').css({"display":"block"})
-	$("#docs").attr("href", "https://www.arduino.cc/")
-	$('#data').css({"display":"none"})
-}
 
 $("#y-top").on("change", function(){
 
