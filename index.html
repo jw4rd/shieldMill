@@ -31,9 +31,6 @@
   <option value="smd" data-part="0.05">pad (SMD 0.05")</option>
   <option value="smd" data-part="0.06">pad (SMD 0.06")</option>
 
-  <option value="pad0510">pad (SMD 0.05x0.1")</option>
-  <option value="pad1005">pad (SMD 0.1x0.05")</option>
-
   <option value="pad0310">pad (SMD 0.03x0.1")</option>
   <option value="pad1003">pad (SMD 0.1x0.03")</option>
   <option value="pad0106">pad (SMD 0.01x0.05")</option>
@@ -71,9 +68,9 @@
 <select id="project" autocomplete="off">
   <option value="projects" selected disabled>projects</option>
   <option value="fabisp">fabisp attiny45</option>
-  <option value="t44">attiny44</option>
-  <option value="t44_ftdi">attiny44 ftdi</option>
+  <option value="t44_ftdi">ftdi attiny44</option>
   <option value="t45">attiny45</option>
+  <option value="t44">attiny44</option>
 </select>
 
 <div id="millAll">clear all</div>
@@ -904,6 +901,7 @@ $(document).keydown(function(e){
 			document.getElementById("type").value="pad0106"
 		}
 
+
 		//console.log(document.getElementById("type").value)
 
 	}
@@ -1257,8 +1255,8 @@ if(document.getElementById("board").value=="arduino"){
 	radius = 0.75
 	makeFrame(radius) 
 	makeGrid()
-
-	$('#docs').css({"display":"none"})
+	$('#docs').css({"display":"block"})
+	$("#docs").attr("href", "https://www.arduino.cc/")
 	$('#data').css({"display":"none"})
 
 }
@@ -1279,6 +1277,13 @@ else if(document.getElementById("board").value=="blank"){
 add_trace()
 
 })
+
+
+if(document.getElementById("board").value=="arduino"){
+	$('#docs').css({"display":"block"})
+	$("#docs").attr("href", "https://www.arduino.cc/")
+	$('#data').css({"display":"none"})
+}
 
 $("#y-top").on("change", function(){
 
