@@ -931,7 +931,7 @@ $(document).keydown(function(e){
 		panX = 0
 		panY = 0 
 	}
-	else if(e.which === 39 && e.shiftKey){
+	else if(e.which === 39 && e.shifKey){
 		if(((document.getElementById("x-left").value)>0)&&(document.getElementById("board").value=="arduino")){
 			(document.getElementById("x-left").value)--
 			$(document.getElementById("x-left")).trigger("change")
@@ -1456,6 +1456,13 @@ function load(board){
 			$( "#part-list" ).append( "<option id=\"part" +  traceNum[i].part + "\"value=\"" + traceNum[i].part + "\">" + traceNum[i].part + "</option>" )
 		}
 		add_trace()
+
+		if(myConfig.panX!=undefined){
+			panX = myConfig.panX
+			panY = myConfig.panY
+		}
+		draw()
+		
 	}
 
 
@@ -1468,6 +1475,10 @@ function save(){
 	myBoard.xmax = document.getElementById("x-right").value
 	myBoard.ymin = document.getElementById("y-top").value
 	myBoard.ymax = document.getElementById("y-bot").value
+
+	myBoard.panX = panX
+	myBoard.panY = panY
+
 	myBoard.hole = hole
 	myBoard.board = document.getElementById("board").value
 	myBoard.side = document.getElementById("side").value

@@ -15728,11 +15728,13 @@
   "xmax": "1",
   "ymin": "-3",
   "ymax": "-3",
+  "panX": -6.603350872763833,
+  "panY": -0.05124392652927412,
   "hole": [],
   "board": "blank",
   "side": "top",
   "grid": "0.025",
-  "finishPass": true,
+  "finishPass": false,
   "pkgOutlines": [],
   "traceNum": [
     {

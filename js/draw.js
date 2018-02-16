@@ -3,8 +3,6 @@
 
 function draw(){
 
-	
-
 	if((pan==true)&&(click==0)){
 		document.getElementById('myCanvas').style.cursor = 'grab'
 		document.getElementById('myCanvas').style.cursor = '-webkit-grab'
