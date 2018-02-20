@@ -574,7 +574,15 @@ function makeGrid(){
 	pts = []
 	grid = []
 
-	document.getElementById('gridSpacing').innerHTML = document.getElementById('grid').value + "\""
+
+	gridSpace=document.getElementById('grid').value
+
+	if(gridSpace[gridSpace.length-1]=="m"){
+		document.getElementById('gridSpacing').innerHTML = gridSpace
+	}
+	else{
+		document.getElementById('gridSpacing').innerHTML = gridSpace + "\""
+	}
 
 	if((document.getElementById("board").value)=="arduino"){
 	pinNum = 0

@@ -73,7 +73,7 @@
   <option value="t44_ftdi">ftdi attiny44</option>
   <option value="t45">attiny45</option>
   <option value="t44">attiny44</option>
-  <option value="test1">test</option>
+  <option value="test1">test cut</option>
 </select>
 
 <div id="millAll">clear all</div>
@@ -892,7 +892,7 @@ $(document).keydown(function(e){
 	//console.log($("#x-origin").is(':focus'))
 
 
-	//console.log(e.which)
+
 
 	if(e.which == 82){
 
@@ -920,6 +920,8 @@ $(document).keydown(function(e){
 
 	if(($("#x-origin").is(':focus')==false) && ($("#y-origin").is(':focus')==false) && ($(".input").is(':focus')==false)){
 
+	console.log(e.which)
+	console.log(e.shiftKey)
 
 	if(e.which === 90 && (e.shiftKey||e.ctrlKey)){
 		//undo()
@@ -931,7 +933,8 @@ $(document).keydown(function(e){
 		panX = 0
 		panY = 0 
 	}
-	else if(e.which === 39 && e.shifKey){
+
+	else if(e.which === 39 && e.shiftKey){
 		if(((document.getElementById("x-left").value)>0)&&(document.getElementById("board").value=="arduino")){
 			(document.getElementById("x-left").value)--
 			$(document.getElementById("x-left")).trigger("change")
@@ -952,6 +955,7 @@ $(document).keydown(function(e){
 		} 
 	}
 	else if(e.which === 37 && e.shiftKey){
+		
 		if(((document.getElementById("x-right").value)>0)&&(document.getElementById("board").value=="arduino")){
 			(document.getElementById("x-right").value)--
 			$(document.getElementById("x-right")).trigger("change")
@@ -972,6 +976,7 @@ $(document).keydown(function(e){
 		}
 	}
 	else if(e.which === 37){
+
 		(document.getElementById("x-left").value)++
 		$(document.getElementById("x-left")).trigger("change")
 	}
@@ -979,7 +984,7 @@ $(document).keydown(function(e){
 		(document.getElementById("y-top").value)++
 		$(document.getElementById("y-top")).trigger("change")
 	}
-	else if(e.which === 39){
+	else if(e.which === 39 && e.shiftKey==false){
 		(document.getElementById("x-right").value)++
 		$(document.getElementById("x-right")).trigger("change") 
 	}
