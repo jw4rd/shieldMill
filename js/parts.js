@@ -496,6 +496,8 @@ function add(){
 
 				temp[j][k]={X:(temp[j][k].X+origin.X).toFixed(2),Y:(temp[j][k].Y+origin.Y).toFixed(2)}
 
+				
+
 			}
 		}
 

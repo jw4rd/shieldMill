@@ -345,6 +345,8 @@ if((on_grid==true)&&(pan==false)){
 	}
 	else if(document.getElementById("type").value.substring(1,4)=="pad"){
 
+		//console.log(document.getElementById("type").value)
+
 		if(document.getElementById("type").value=="Rpad1"){	
 			ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.117*sf,0,(Math.PI*2) )
 		}
@@ -355,7 +357,7 @@ if((on_grid==true)&&(pan==false)){
 			ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.4*sf,0,(Math.PI*2) )
 		}
 		else if(document.getElementById("type").value=="Rpad5"){	
-			ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.585*sf,0,(Math.PI*2) )
+			ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.71*sf,0,(Math.PI*2) )
 		}		
 
 	ctx.fill()

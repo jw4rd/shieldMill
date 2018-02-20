@@ -69,10 +69,10 @@
 
 <select id="project" autocomplete="off">
   <option value="projects" selected disabled>projects</option>
-  <option value="fabisp">fabisp attiny45</option>
-  <option value="t44_ftdi">ftdi attiny44</option>
-  <option value="t45">attiny45</option>
-  <option value="t44">attiny44</option>
+  <option value="fabisp">FABISP ATtiny45</option>
+  <option value="t44_ftdi">FTDI ATtiny44</option>
+  <option value="t45">ATtiny45</option>
+  <option value="t44">ATtiny44</option>
   <option value="test1">test cut</option>
 </select>
 
@@ -533,7 +533,7 @@ $("#myCanvas").on('click', function(e) {
 							if(pad==0){
 								pkgOutlines.push([])
 								for(j=0;j<resistorOutline.length;j++){
-									pkgOutlines[pkgOutlines.length-1].push({X:parseFloat((resistorOutline[j].X+(pts[i].X)).toFixed(3)),Y:parseFloat((resistorOutline[j].Y+(pts[i].Y)).toFixed(3)),test:"HI",part:(partNum)})
+									pkgOutlines[pkgOutlines.length-1].push({X:parseFloat((resistorOutline[j].X+(pts[i].X)).toFixed(3)),Y:parseFloat((resistorOutline[j].Y+(pts[i].Y)).toFixed(3)),part:(partNum)})
 							}
 						}
 					}
@@ -556,8 +556,8 @@ $("#myCanvas").on('click', function(e) {
 						resistor[j].reverse()
 						for(k=0;k<resistor[j].length;k++){
 							temp[temp.length-1].push({X:parseFloat((resistor[j][k].X+(pts[i].X)).toFixed(3)),Y:parseFloat((resistor[j][k].Y+(pts[i].Y)).toFixed(3))})
-							
 						}
+						
 					
 					}
 						pad=1
@@ -566,7 +566,10 @@ $("#myCanvas").on('click', function(e) {
 					
 						for(j=0;j<temp.length;j++){
 							trace.push(temp[j])
-						}						
+						}
+						trace[trace.length-2][0].part = partNum
+						trace[trace.length-1][0].part = partNum
+						
 						pad=2
 						add_trace()
 						net.push([])
@@ -594,6 +597,7 @@ $("#myCanvas").on('click', function(e) {
 				if(((net[net.length-1].length)==0) && (document.getElementById("type").value!="resistor") ){
 					net[net.length-1].push({X:(pts[i].X),Y:(pts[i].Y),D:drill,part:partNum})
 
+
 						trace.push([])
 						
 						if((document.getElementById("type").value=="dip")||(document.getElementById("type").value=="via")||(document.getElementById("type").value.substring(1,4)=="pad")){
@@ -611,7 +615,6 @@ $("#myCanvas").on('click', function(e) {
 								trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*r),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*r)})
 							}
 						}
-
 						else if((document.getElementById("type").value=="smd")){
 							trace[trace.length-1].push({X:pts[i].X-r,Y:pts[i].Y-r})
 							trace[trace.length-1].push({X:pts[i].X-r,Y:pts[i].Y+r})
@@ -633,6 +636,7 @@ $("#myCanvas").on('click', function(e) {
 						else if((pts[i].X==pts[i-1].X) && (pts[i].Y==pts[i-1].Y)){
 
 						}
+						trace[trace.length-1][0].part = partNum
 	
 				}
 				//resistor
@@ -648,6 +652,7 @@ $("#myCanvas").on('click', function(e) {
 					for(j=0;j<=4;j++){
 						trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/4*j)*0.1),Y:((pts[i].Y)+Math.cos((Math.PI*2)/4*j)*0.1)})
 					}
+					
 				}
 				else if(((net[net.length-1].length)>0)){
 
@@ -680,7 +685,7 @@ $("#myCanvas").on('click', function(e) {
 							var Fy = By + (-(d)*PNABy)
 
 					if(document.getElementById("type").value.substring(0,5)=="route"){
-						trace.push([{X:Cx,Y:Cy},{X:Dx,Y:Dy},{X:Ex,Y:Ey},{X:Fx,Y:Fy},{X:Cx,Y:Cy}])
+						trace.push([{X:Cx,Y:Cy,part:partNum},{X:Dx,Y:Dy},{X:Ex,Y:Ey},{X:Fx,Y:Fy},{X:Cx,Y:Cy}])
 					}
 					else{
 						trace.push([])
@@ -719,7 +724,7 @@ $("#myCanvas").on('click', function(e) {
 
 					net[net.length-1].push({X:(pts[i].X),Y:(pts[i].Y),D:drill,part:partNum})
 					}
-
+					trace[trace.length-1][0].part = partNum
 					if(skip==false){
 						if(seg==1){
 							net.push([])	
@@ -740,7 +745,7 @@ $("#myCanvas").on('click', function(e) {
 		if(document.getElementById("type").value.substring(0,5)=="route"){
 			if(seg==1){
 				//console.log(x + ' ' + y)
-				traceNum.push({node:[endX,endY]})
+				traceNum.push({part:partNum,node:[endX,endY]})
 				
 			}
 			if(seg==0){
@@ -786,7 +791,7 @@ $("#myCanvas").on('click', function(e) {
 	}
 
 	//console.log(partNum)
-	//console.log(net)
+	//console.log(trace)
 
 })
 
@@ -920,8 +925,8 @@ $(document).keydown(function(e){
 
 	if(($("#x-origin").is(':focus')==false) && ($("#y-origin").is(':focus')==false) && ($(".input").is(':focus')==false)){
 
-	console.log(e.which)
-	console.log(e.shiftKey)
+	//console.log(e.which)
+	//console.log(e.shiftKey)
 
 	if(e.which === 90 && (e.shiftKey||e.ctrlKey)){
 		//undo()
@@ -1515,8 +1520,7 @@ function save(){
 }
 
 function ripup(){
-
-	//console.log(traceNum)
+	
 	
 	if((pad==1)&&(document.getElementById("type").value=="resistor")){
 
@@ -1575,7 +1579,9 @@ function ripup(){
 
 		$("#part-list").empty()
 		$("#part-list").append("<option value=\"part\" selected disabled>part#</option>")
-
+		net=[[]]
+		traceNum=[]
+		trace=[]
 
 	}
 
@@ -1597,21 +1603,55 @@ function ripup(){
 		}
 	}
 	
+
+	if(trace[0][0].part==undefined){
+
+
 	for(i=0;i<traceNum.length;i++){
+
 		if(traceNum[i].part==remove){
 
-			if(traceNum[i].trace.length==3){
-				trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[],[],[])
-			}
-			else if(traceNum[i].trace.length==2){
-				trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[],[])
-			}
-			else{
-			trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[])
-			}
+
+				if(traceNum[i].trace.length==3){
+					trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[],[],[])
+				}
+				else if(traceNum[i].trace.length==2){
+					trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[],[])
+				}
+				else{
+					trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[])
+				}
+		
 			traceNum.splice(i,1)
 			i--
 		}
+	}
+
+
+	}
+	else{
+
+	for(i=0;i<traceNum.length;i++){
+			if(traceNum[i].part==remove){
+				traceNum.splice(i,1)
+				i--
+			}
+		}
+	
+
+
+	}
+
+	for(i=0;i<trace.length;i++){
+		console.log(remove)
+		if(trace[i][0]!=undefined){
+			if(trace[i][0].part==remove){
+				trace.splice(i,1)
+				i--
+			}
+		}
+
+
 	}
 
 	for(i=0;i<pkgOutlines.length;i++){
