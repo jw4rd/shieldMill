@@ -75,6 +75,7 @@
   <option value="t45">attiny45</option>
   <option value="t44">attiny44</option>
   <option value="button">button attiny45</option>
+  <option value="led">led attiny45</option>
   <option value="test1">test cut</option>
 </select>
 
@@ -1236,6 +1237,12 @@ else if(project=="t45"){
 
 }
 else if(project=="button"){
+
+	$('#docs').css({"display":"none"})
+	$("#data").attr("href", "http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2586-AVR-8-bit-Microcontroller-ATtiny25-ATtiny45-ATtiny85_Datasheet.pdf")
+
+}
+else if(project=="led"){
 
 	$('#docs').css({"display":"none"})
 	$("#data").attr("href", "http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2586-AVR-8-bit-Microcontroller-ATtiny25-ATtiny45-ATtiny85_Datasheet.pdf")
