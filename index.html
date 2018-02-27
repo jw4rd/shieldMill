@@ -7,7 +7,7 @@
 	<title>PCB MILL</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
 	<link href="css/style.css" rel="stylesheet">
-	<script src="js/libs/jquery-1.11.2.min.js"></script>
+	<script src="js/libs/jquery-3.3.1.min.js"></script>
 	<script src="js/libs/jquery.mousewheel.min.js"></script>
 	<script src="js/libs/clipper.js"></script>
 	<script src="js/draw.js"></script>
@@ -1251,7 +1251,6 @@ else if(project=="led"){
 else{
 	$('#docs').css({"display":"none"})
 	$('#data').css({"display":"none"})
-
 }
 
 
@@ -1292,9 +1291,12 @@ if(document.getElementById("board").value=="arduino"){
 	document.getElementById("y-bot").value=0
 	radius = 0.75
 	makeFrame(radius) 
+
+	document.getElementById("grid").value = "0.1"
 	makeGrid()
 	$('#docs').css({"display":"none"})
 	$('#data').css({"display":"none"})
+
 
 }
 else if(document.getElementById("board").value=="blank"){
@@ -1307,7 +1309,7 @@ else if(document.getElementById("board").value=="blank"){
 	document.getElementById("y-top").value=0
 	document.getElementById("y-bot").value=0
 	radius = 1.27
-	makeFrame(radius) 
+	makeFrame(radius)
 	makeGrid()
 }
 
@@ -1615,47 +1617,53 @@ function ripup(){
 		}
 	}
 	
+	//console.log(trace)
 
-	if(trace[0][0].part==undefined){
+	//if(trace.length>0){
 
-
-	for(i=0;i<traceNum.length;i++){
-
-		if(traceNum[i].part==remove){
+	if((trace[0][0]!=null)&&(trace[0][0].part!=null)){
 
 
-				if(traceNum[i].trace.length==3){
-					trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[],[],[])
-				}
-				else if(traceNum[i].trace.length==2){
-					trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[],[])
-				}
-				else{
-					trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[])
-				}
-		
-			traceNum.splice(i,1)
-			i--
-		}
-	}
 
-
-	}
-	else{
-
-	for(i=0;i<traceNum.length;i++){
+		for(i=0;i<traceNum.length;i++){
 			if(traceNum[i].part==remove){
 				traceNum.splice(i,1)
 				i--
 			}
 		}
-	
+
+	}
+
+
+	//}
+	else{
+
+
+		for(i=0;i<traceNum.length;i++){
+
+			if(traceNum[i].part==remove){
+
+					if(traceNum[i].trace.length==3){
+						trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[],[],[])
+					}
+					else if(traceNum[i].trace.length==2){
+						trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[],[])
+					}
+					else{
+						trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[])
+					}
+		
+				traceNum.splice(i,1)
+				i--
+			}
+		}
+
 
 
 	}
 
 	for(i=0;i<trace.length;i++){
-		console.log(remove)
+		//console.log(remove)
 		if(trace[i][0]!=undefined){
 			if(trace[i][0].part==remove){
 				trace.splice(i,1)
