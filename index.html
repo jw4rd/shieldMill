@@ -1588,7 +1588,6 @@ function ripup(){
 
 	}
 	
-
 	if(sel.options.length==2){
 
 		$("#part-list").empty()
@@ -1616,11 +1615,14 @@ function ripup(){
 			}
 		}
 	}
+
+	//draw()
 	
 	//console.log(trace)
 
 	//if(trace.length>0){
 
+	/*
 	if((trace[0][0]!=null)&&(trace[0][0].part!=null)){
 
 
@@ -1637,12 +1639,13 @@ function ripup(){
 
 	//}
 	else{
-
+	*/
 
 		for(i=0;i<traceNum.length;i++){
 
 			if(traceNum[i].part==remove){
 
+				/*
 					if(traceNum[i].trace.length==3){
 						trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[],[],[])
 					}
@@ -1652,7 +1655,7 @@ function ripup(){
 					else{
 						trace.splice(traceNum[i].trace[traceNum[i].trace.length-1],traceNum[i].trace.length,[])
 					}
-		
+				*/
 				traceNum.splice(i,1)
 				i--
 			}
@@ -1660,7 +1663,8 @@ function ripup(){
 
 
 
-	}
+	//}
+	//}
 
 	for(i=0;i<trace.length;i++){
 		//console.log(remove)
@@ -1688,6 +1692,7 @@ function ripup(){
 	
 
 	add_trace()
+	//draw()
 	
 }
 

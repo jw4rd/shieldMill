@@ -325,7 +325,9 @@ ctx.strokeStyle="#999"
 
 ctx.beginPath()
 
-if((on_grid==true)&&(pan==false)){
+console.log($("#part-list").is(':focus'))
+
+if((on_grid==true)&&(pan==false)&&($("#part-list").is(':focus')==false)){
 	
 	if(document.getElementById("type").value=="dip"){
 		ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.85*sf,0,(Math.PI*2) )
