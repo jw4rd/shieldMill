@@ -114,6 +114,9 @@ if((seg==1)&&(line==true)&&(pan==false)&&(document.getElementById("type").value.
 	if(document.getElementById("type").value=="routeB"){
 		ctx.lineWidth=0.3*sf
 	}
+	else if(document.getElementById("type").value=="routeA"){
+		ctx.lineWidth=1.4*sf
+	}
 	else if(document.getElementById("type").value=="routeC"){
 		ctx.lineWidth=0.2*sf
 	}
@@ -215,6 +218,14 @@ for(i=0;i<net.length;i++){
 			ctx.moveTo(ctx.canvas.width/2+((net[i][j].X)*sf),ctx.canvas.height/2+((net[i][j].Y-0.8)*sf))
 			ctx.lineTo(ctx.canvas.width/2+((net[i][j].X)*sf),ctx.canvas.height/2+((net[i][j].Y+0.8)*sf))
 		}
+		else if(net[i][j].D=="rivet"){
+			ctx.fillStyle="#fff"
+			ctx.arc(ctx.canvas.width/2+((net[i][j].X)*sf),ctx.canvas.height/2+((net[i][j].Y)*sf),0.75*sf,0,(Math.PI*2))
+			ctx.moveTo(ctx.canvas.width/2+((net[i][j].X-0.8)*sf),ctx.canvas.height/2+((net[i][j].Y)*sf))
+			ctx.lineTo(ctx.canvas.width/2+((net[i][j].X+0.8)*sf),ctx.canvas.height/2+((net[i][j].Y)*sf))
+			ctx.moveTo(ctx.canvas.width/2+((net[i][j].X)*sf),ctx.canvas.height/2+((net[i][j].Y-0.8)*sf))
+			ctx.lineTo(ctx.canvas.width/2+((net[i][j].X)*sf),ctx.canvas.height/2+((net[i][j].Y+0.8)*sf))
+		}
 		if( (i==net.length-1) && (j==(net[i].length-1)) ){
 			ctx.beginPath()
 			ctx.fillStyle="#00ff00"
@@ -236,6 +247,14 @@ for(i=0;i<net.length;i++){
 			else if(net[i][j].D=="hole"){
 				ctx.fillStyle="#fff"			
 				ctx.arc(ctx.canvas.width/2+((net[i][j].X)*sf),ctx.canvas.height/2+((net[i][j].Y)*sf),1.27*sf,0,(Math.PI*2))
+				ctx.moveTo(ctx.canvas.width/2+((net[i][j].X-0.8)*sf),ctx.canvas.height/2+((net[i][j].Y)*sf))
+				ctx.lineTo(ctx.canvas.width/2+((net[i][j].X+0.8)*sf),ctx.canvas.height/2+((net[i][j].Y)*sf))
+				ctx.moveTo(ctx.canvas.width/2+((net[i][j].X)*sf),ctx.canvas.height/2+((net[i][j].Y-0.8)*sf))
+				ctx.lineTo(ctx.canvas.width/2+((net[i][j].X)*sf),ctx.canvas.height/2+((net[i][j].Y+0.8)*sf))
+			}
+			else if(net[i][j].D=="rivet"){
+				ctx.fillStyle="#fff"
+				ctx.arc(ctx.canvas.width/2+((net[i][j].X)*sf),ctx.canvas.height/2+((net[i][j].Y)*sf),0.75*sf,0,(Math.PI*2))
 				ctx.moveTo(ctx.canvas.width/2+((net[i][j].X-0.8)*sf),ctx.canvas.height/2+((net[i][j].Y)*sf))
 				ctx.lineTo(ctx.canvas.width/2+((net[i][j].X+0.8)*sf),ctx.canvas.height/2+((net[i][j].Y)*sf))
 				ctx.moveTo(ctx.canvas.width/2+((net[i][j].X)*sf),ctx.canvas.height/2+((net[i][j].Y-0.8)*sf))
@@ -325,7 +344,7 @@ ctx.strokeStyle="#999"
 
 ctx.beginPath()
 
-console.log($("#part-list").is(':focus'))
+//console.log($("#part-list").is(':focus'))
 
 if((on_grid==true)&&(pan==false)&&($("#part-list").is(':focus')==false)){
 	
@@ -367,6 +386,12 @@ if((on_grid==true)&&(pan==false)&&($("#part-list").is(':focus')==false)){
 	else if(document.getElementById("type").value=="hole"){
 		ctx.fillStyle="#eee"
 		ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),1.27*sf,0,(Math.PI*2) )
+		ctx.fill()
+		ctx.stroke()
+	}
+	else if(document.getElementById("type").value=="rivet"){
+		ctx.fillStyle="#eee"
+		ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),1*sf,0,(Math.PI*2) )
 		ctx.fill()
 		ctx.stroke()
 	}

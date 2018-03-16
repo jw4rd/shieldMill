@@ -21,6 +21,7 @@
   <option value="part" selected disabled>&#43; parts</option>
   <option value="hole">hole (0.1"&#8960;)</option>
   <option value="dip">pad (DIP 0.06"&#8960;)</option>
+  <option value="rivet">rivet (0.06"&#8960;)</option>
 
   <option value="Rpad05">pad (0.005"&#8960;)</option>
   <option value="Rpad1">pad (0.01"&#8960;)</option>
@@ -43,6 +44,7 @@
   <option value="routeC">trace (0.010")</option>
   <option value="routeB">trace (0.012")</option>
   <option value="route">trace (0.024")</option>
+  <option value="routeA">trace (0.06")</option>
 
   <option value="resistor">SMD (1206)</option>
   <option value="via">via (0.05"&#8960;)</option>
@@ -76,6 +78,8 @@
   <option value="t44">attiny44</option>
   <option value="button">button attiny45</option>
   <option value="led">led attiny45</option>
+  <option value="stepper_shield">stepper shield</option>
+  <option value="stepper_shield_rivets">stepper shield (w/ rivets)</option>
   <option value="test1">test cut</option>
 </select>
 
@@ -462,6 +466,10 @@ $("#myCanvas").on('click', function(e) {
 				r = 0.16
 				d = 0.15
 			}
+			else if(document.getElementById("type").value=="routeA"){
+				r = 0.81
+				d = 0.8
+			}
 			else if(document.getElementById("type").value=="routeC"){
 				r = 0.11
 				d = 0.10
@@ -477,6 +485,10 @@ $("#myCanvas").on('click', function(e) {
 			else if(document.getElementById("type").value=="hole"){
 				r = 1.27
 				drill="hole"
+			}
+			else if(document.getElementById("type").value=="rivet"){
+				r = 1.05
+				drill="rivet"
 			}
 			else if(padType=="0.03"){
 				//finishPass=true
@@ -596,6 +608,17 @@ $("#myCanvas").on('click', function(e) {
 						}
 					}
 				}
+				else if(document.getElementById("type").value=="rivet"){
+					hole.push([])
+					for(j=0;j<=v;j++){
+						if(j==0){
+							hole[hole.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*0.35),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*0.35),part:partNum})
+						}
+						else{
+							hole[hole.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*0.35),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*0.35)})
+						}
+					}
+				}
 
 				if(((net[net.length-1].length)==0) && (document.getElementById("type").value!="resistor") ){
 					net[net.length-1].push({X:(pts[i].X),Y:(pts[i].Y),D:drill,part:partNum})
@@ -608,7 +631,7 @@ $("#myCanvas").on('click', function(e) {
 								trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*r),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*r)})
 							}
 						}
-						else if(document.getElementById("type").value=="hole"){
+						else if((document.getElementById("type").value=="hole")||(document.getElementById("type").value=="rivet")){
 							for(j=0;j<=v;j++){
 								trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*r),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*r)})
 							}
@@ -700,7 +723,7 @@ $("#myCanvas").on('click', function(e) {
 								trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*r),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*r)})
 							}
 						}
-						else if(document.getElementById("type").value=="hole"){
+						else if((document.getElementById("type").value=="hole")||(document.getElementById("type").value=="rivet")){
 							for(j=0;j<=v;j++){
 								trace[trace.length-1].push({X:((pts[i].X)+Math.sin((Math.PI*2)/v*j)*r),Y:((pts[i].Y)+Math.cos((Math.PI*2)/v*j)*r)})
 							}
@@ -1218,6 +1241,12 @@ else if(project=="fabisp"){
 	$("#data").attr("href", "http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2586-AVR-8-bit-Microcontroller-ATtiny25-ATtiny45-ATtiny85_Datasheet.pdf")
 
 }
+else if((project=="stepper_shield")||(project=="stepper_shield_rivets")){
+
+	$("#docs").attr("href", "https://github.com/jw4rd/stepper/")
+	$("#data").attr("href", "https://reprapworld.com/datasheets/datasheet%20drv8825.pdf")
+
+}
 else if(project=="t44"){
 
 	$('#docs').css({"display":"none"})
@@ -1280,7 +1309,7 @@ seg = 0
 //console.log(zoom)
 
 if(document.getElementById("board").value=="arduino"){
-	$("#project").val("projects")
+	//$("#project").val("projects")
 	xmin = -24.1 
 	ymin = -25.4   
 	xmax = 24.1  	 
@@ -1294,8 +1323,8 @@ if(document.getElementById("board").value=="arduino"){
 
 	document.getElementById("grid").value = "0.1"
 	makeGrid()
-	$('#docs').css({"display":"none"})
-	$('#data').css({"display":"none"})
+	//$('#docs').css({"display":"none"})
+	//$('#data').css({"display":"none"})
 
 
 }
@@ -1550,7 +1579,6 @@ function ripup(){
 		traceNum.pop()
 		net.pop()
 		trace.pop()
-
 		trace.push([])
 		net.push([])
 
@@ -1573,6 +1601,7 @@ function ripup(){
 
 
 	//console.log(sel.options.length)
+
 	
 	for (i=0;i<sel.options.length;i++) {
 
