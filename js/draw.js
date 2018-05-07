@@ -472,19 +472,21 @@ ctx.beginPath()
 			ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.11*sf,0,(Math.PI*2) )
 			ctx.lineWidth=0.12*sf
 		}
+		else if(document.getElementById("type").value=="routeA"){
+			ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.71*sf,0,(Math.PI*2) )
+			ctx.lineWidth=0.12*sf
+		}
 		else{
 			ctx.arc(	(ctx.canvas.width/2+(mouseX)*sf),(ctx.canvas.height/2+(mouseY)*sf),0.25*sf,0,(Math.PI*2) )
 			ctx.lineWidth=0.4*sf
 		}
-		//ctx.stroke()
 		ctx.fill()
 	}
 
 }
 
 ctx.lineWidth="0.6"
-//ctx.strokeStyle="#6600cc"
-ctx.strokeStyle="rgba(0, 0, 0, 0.4)"
+ctx.strokeStyle="rgba(0,0,0,0.4)"
 
 if(document.getElementById("file").value=="hpgl"){
 

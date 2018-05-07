@@ -80,6 +80,7 @@
   <option value="led">led attiny45</option>
   <option value="stepper_shield">stepper shield</option>
   <option value="stepper_shield_rivets">stepper shield (w/ rivets)</option>
+  <option value="stepper_shield4">stepper shield (4 motors w/rivets)</option>
   <option value="test1">test cut</option>
 </select>
 
@@ -1223,7 +1224,7 @@ $("#board").on("change", function(){
 
 
 project = document.getElementById('project').value
-console.log(project)
+//console.log(project)
 
 $('#docs').css({"display":"block"})
 $('#data').css({"display":"block"})
@@ -1502,9 +1503,11 @@ function load(board){
 
 		pkgOutlines = myConfig.pkgOutlines
 		trace = myConfig.trace
+		hole = myConfig.hole
 		net = myConfig.net
 		partNum = myConfig.partNum
 		traceNum = myConfig.traceNum
+		console.log(hole)
 		for(i=0;i<traceNum.length;i++){
 			$( "#part-list" ).append( "<option id=\"part" +  traceNum[i].part + "\"value=\"" + traceNum[i].part + "\">" + traceNum[i].part + "</option>" )
 		}
@@ -1540,6 +1543,7 @@ function save(){
 	myBoard.pkgOutlines = pkgOutlines
 	myBoard.traceNum = traceNum
 	myBoard.partNum = partNum
+	console.log(hole)
 
 	//if(fabmo.isPresent()==false){
 	//	localStorage.setItem("default",JSON.stringify(myBoard))	

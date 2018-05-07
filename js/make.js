@@ -310,7 +310,7 @@ function make(){
    		}
 			g+="JZ,0.1\n"
 		}
-		else if(filetype=="gcode"){//holes
+		else if(filetype=="gcode"){ //holes
 			g+="g0x"+(((hole[i][0].X+Math.abs(xmin))/sfx)+x0).toFixed(fixed)+"y"+ (((hole[i][0].Y+ymax)/sfx)+y0).toFixed(fixed) + "\n"
 			while(pass<=pass_no){
 	   	g+="g1z-"+ (pass_depth*pass).toFixed(fixed) + "f" + plunge + "\n"
@@ -510,7 +510,6 @@ function make(){
 		else{
 			tabLength=0.1
 		}
-
 
 		g+="g0x"+(((path1[0].X+Math.abs(xmin))/sfx)+x0).toFixed(fixed) + "y" + (((path1[0].Y+ymax)/sfx)+y0).toFixed(fixed) + "\n"
 			while(pass<=pass_no){   
